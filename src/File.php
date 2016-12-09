@@ -16,6 +16,10 @@ class File {
 	private $hash;
 	/** @var bool */
 	private $io;
+	/** @var string */
+	private $inputDirectory;
+	/** @var string */
+	private $outputDirectory;
 
 	// binary "enum"
 	const INPUT = true;
@@ -25,9 +29,13 @@ class File {
 	 * File constructor.
 	 *
 	 * @param bool $io File::INPUT or File::OUTPUT
+	 * @param string $inputDirectory
+	 * @param string $outputDirectory
 	 */
-	function __construct(boolean $io) {
-		$this->io;
+	function __construct(boolean $io, string $inputDirectory, string $outputDirectory) {
+		$this->io = $io;
+		$this->inputDirectory = $inputDirectory;
+		$this->outputDirectory = $outputDirectory;
 	}
 
 	public function __clone() {
@@ -45,5 +53,17 @@ class File {
 		$file = clone $this;
 		$file->io = !($file->io);
 		return $file;
+	}
+
+	public function getContents(): string {
+		return file_get_contents($this->getFilename());
+	}
+
+	public function getFilename(): string {
+		if($this->io === self::INPUT) {
+			return $this->inputDirectory . DIRECTORY_SEPARATOR . $this->path;
+		} else {
+			return $this->outputDirectory . DIRECTORY_SEPARATOR . $this->path;
+		}
 	}
 }
