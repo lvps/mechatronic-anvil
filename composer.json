@@ -1,0 +1,14 @@
+{
+    "name": "lvps/mechatronic-anvil",
+    "description": "asd",
+    "type": "project",
+    "require": {
+        "michelf/php-markdown": "^1.7",
+        "symfony/yaml": "^3.2"
+    },
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "autoload": {
+      "psr-4": {"lvps\\MechatronicAnvil\\": "src/"}
+    }
+}
