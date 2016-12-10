@@ -7,7 +7,7 @@
 namespace lvps\MechatronicAnvil;
 
 
-class Directory {
+class Directory implements HasParent {
 	use Stat;
 
 	/** @var string */
@@ -71,8 +71,12 @@ class Directory {
 		}
 	}
 
-	private function setParent(Directory &$parent) {
+	public function setParent(Directory &$parent) {
 		$this->parent = $parent;
+	}
+
+	public function getParent(): Directory {
+		return $this->parent;
 	}
 
 	private function stat() {
@@ -98,25 +102,27 @@ class Directory {
 	/**
 	 * Builds the file\directory output tree from the input one.
 	 *
+	 * @param Directory $newRoot new root directory (i.e. OUTPUT)
 	 * @return Directory the output tree
 	 */
-	public function buildOutputTree(): Directory {
-		$linkFilesToThemselves = function(File &$file) {
+	public function buildOutputTree(Directory $newRoot): Directory {
+		$linkFilesToThemselves = function(File $file) {
 			if($file->getRenderFrom() !== NULL) {
 				throw new \LogicException('buildOutputTree() must be called only on the input tree (i.e. found a non-NULL renderFrom variable in a File object)!');
 			}
 			$file->setRenderFrom($file);
 		};
-		$linkFilesToNULL = function(File &$file) {
+		$linkFilesToNULL = function(File $file) {
 			$file->setRenderFrom(NULL);
 		};
 		$this->recursiveWalkCallback($linkFilesToThemselves, NULL, NULL);
 		$copy = clone $this;
 		$this->recursiveWalkCallback($linkFilesToNULL, NULL, NULL);
+		$copy->reRoot($newRoot);
 		return $copy;
 	}
 
-	private function isCallableOrNull($what): boolean {
+	private function isCallableOrNull($what): bool {
 		if(is_callable($what) || is_null($what)) {
 			return true;
 		} else {
@@ -134,7 +140,7 @@ class Directory {
 	 * @param Callable|NULL $onDirEnter
 	 * @param Callable|NULL $onDirLeave
 	 */
-	public function recursiveWalkCallback(Callable $onFile, Callable $onDirEnter = NULL, Callable $onDirLeave = NULL) {
+	public function recursiveWalkCallback($onFile, $onDirEnter = NULL, $onDirLeave = NULL) {
 		if(!$this->isCallableOrNull($onFile)) {
 			throw new \InvalidArgumentException('$onFile must be callable or NULL!');
 		}
@@ -148,7 +154,7 @@ class Directory {
 		$this->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
 	}
 
-	private function recursiveWalkCallbackInternal(Callable $onFile, Callable $onDirEnter, Callable $onDirLeave) {
+	private function recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave) {
 		foreach($this->content as $item) {
 			if($item instanceof File) {
 				if($onFile !== NULL) {
@@ -163,6 +169,19 @@ class Directory {
 					call_user_func($onDirLeave, $item);
 				}
 			}
+		}
+	}
+
+	// this is probably the only place where "&" is really needed, but whatever.
+	public function reRoot(Directory &$root) {
+		if($this->parent === NULL) {
+			$root->content = $this->content;
+			foreach($root->content as $item) {
+				/** @var File|Directory $item */
+				$item->setParent($root);
+			}
+		} else {
+			$this->parent->reRoot($root);
 		}
 	}
 }

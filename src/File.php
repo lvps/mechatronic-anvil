@@ -7,7 +7,7 @@
 namespace lvps\MechatronicAnvil;
 
 
-class File {
+class File implements HasParent {
 	use Stat;
 
 	/** @var string|NULL */
@@ -57,6 +57,10 @@ class File {
 
 	public function setParent(Directory &$parent) {
 		$this->parent = $parent;
+	}
+
+	public function getParent(): Directory {
+		return $this->parent;
 	}
 
 	/**

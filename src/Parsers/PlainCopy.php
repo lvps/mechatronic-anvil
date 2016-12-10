@@ -19,10 +19,6 @@ class PlainCopy implements Parser {
 		return NULL;
 	}
 
-	public function getOutputFile(File $from): File {
-		return $from->cloneToInputOutput();
-	}
-
 	public function renderToString(File $from, File $to, Metadata $metadata): string {
 		return $from->getContents();
 	}
