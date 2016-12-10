@@ -6,7 +6,6 @@
 
 namespace lvps\MechatronicAnvil\Parsers;
 use lvps\MechatronicAnvil\File;
-use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
 
 class PlainCopy implements Parser {
@@ -15,19 +14,15 @@ class PlainCopy implements Parser {
 		return true;
 	}
 
-	public function getMetadata(File $from): Metadata {
-		return NULL;
+	public function renderToString(File $file): string {
+		return $file->getContents();
 	}
 
-	public function renderToString(File $from, File $to, Metadata $metadata): string {
-		return $from->getContents();
+	public function renderToFile(File $file) {
+		// TODO: implement this
 	}
 
-	public function renderToFile(File $from, File $to, Metadata $metadata): void {
-		if($to->older()) {
-			copy($from->getFileName(), $to->getFileName());
-			touch($to->getFileName(), $to->getMtime());
-			chmod($to->getFileName(), $to->getMode());
-		}
+	public function parse(File &$file) {
+		$file->setParser($this);
 	}
 }

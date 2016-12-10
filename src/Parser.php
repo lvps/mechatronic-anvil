@@ -9,8 +9,7 @@ namespace lvps\MechatronicAnvil;
 
 Interface Parser {
 	public function canParse(File $what): bool;
-	public function getMetadata(File $from): Metadata;
-	public function getOutputFile(File $from): File;
-	public function renderToString(File $from, File $to, Metadata $metadata): string;
-	public function renderToFile(File $from, File $to, Metadata $metadata): void;
+	public function parse(File &$from);
+	public function renderToString(File $file): string;
+	public function renderToFile(File $file);
 }

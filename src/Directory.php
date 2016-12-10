@@ -132,13 +132,14 @@ class Directory implements HasParent {
 
 	/**
 	 * Walk through the directory tree recusively.
-	 * Calls $onFile for every file, and $onDirEnter & $onDirLeave fo every directory encountered.
+	 * Calls $onFile for every file, and $onDirEnter & $onDirLeave for every directory encountered.
 	 * Callbacks receive a File or Directory object as the only parameter.
 	 * NULL instead of a Callable function means "no action".
 	 *
 	 * @param Callable|NULL $onFile
 	 * @param Callable|NULL $onDirEnter
 	 * @param Callable|NULL $onDirLeave
+	 * @see Directory::walkCallback
 	 */
 	public function recursiveWalkCallback($onFile, $onDirEnter = NULL, $onDirLeave = NULL) {
 		if(!$this->isCallableOrNull($onFile)) {
@@ -152,6 +153,37 @@ class Directory implements HasParent {
 		}
 
 		$this->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
+	}
+
+	/**
+	 * Walk across the current directory.
+	 * Calls $onFile for every file and $onDir for every directory encountered.
+	 * Callbacks receive a File or Directory object as the only parameter.
+	 * NULL instead of a Callable function means "no action".
+	 *
+	 * @param $onFile
+	 * @param null $onDir
+	 * @see Directory::recursiveWalkCallback
+	 */
+	public function walkCallback($onFile, $onDir = NULL) {
+		if(!$this->isCallableOrNull($onFile)) {
+			throw new \InvalidArgumentException('$onFile must be callable or NULL!');
+		}
+		if(!$this->isCallableOrNull($onDir)) {
+			throw new \InvalidArgumentException('$onDir must be callable or NULL!');
+		}
+
+		foreach($this->content as $item) {
+			if($item instanceof File) {
+				if($onFile !== NULL) {
+					call_user_func($onFile, $item);
+				}
+			} else {
+				if($onDir !== NULL) {
+					call_user_func($onDir, $item);
+				}
+			}
+		}
 	}
 
 	private function recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave) {

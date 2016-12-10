@@ -18,6 +18,10 @@ class File implements HasParent {
 	private $renderFrom;
 	/** @var Directory */
 	private $parent;
+	/** @var Metadata|NULL */
+	private $metadata = NULL;
+	/** @var Parser|NULL */
+	private $parser = NULL;
 
 	/**
 	 * File constructor.
@@ -75,5 +79,41 @@ class File implements HasParent {
 	 */
 	public function setRenderFrom($renderFrom) {
 		$this->renderFrom = $renderFrom;
+	}
+
+	/**
+	 * @return Parser|NULL
+	 */
+	public function getParser() {
+		return $this->parser;
+	}
+
+	/**
+	 * @param Parser|NULL $parser
+	 */
+	public function setParser($parser) {
+		$this->parser = $parser;
+	}
+
+	public function addMetadataOnTop(Metadata $other) {
+		if($this->metadata === NULL) {
+			$this->metadata = $other;
+			return;
+		}
+
+		$this->metadata = $other->merge($this->metadata);
+	}
+
+	public function addMetadataOnBottom(Metadata $other) {
+		if($this->metadata === NULL) {
+			$this->metadata = $other;
+			return;
+		}
+
+		$this->metadata = $this->metadata->merge($other);
+	}
+
+	public function __toString(): string {
+		return $this->getFilename();
 	}
 }
