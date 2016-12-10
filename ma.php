@@ -14,3 +14,5 @@ define('OUTPUT', '../output');
 
 $inputTree = new Directory(INPUT);
 $inputTree->buildTree();
+//$outputTree = $inputTree->buildOutputTree();
+

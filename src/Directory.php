@@ -8,6 +8,8 @@ namespace lvps\MechatronicAnvil;
 
 
 class Directory {
+	use Stat;
+
 	/** @var string */
 	private $name;
 	/** @var Directory|NULL */
@@ -54,11 +56,15 @@ class Directory {
 				continue;
 			}
 
-			if(is_file($currentPath . DIRECTORY_SEPARATOR . $entry)) {
+			$filename = $currentPath . DIRECTORY_SEPARATOR . $entry;
+
+			if(is_file($filename)) {
 				$thing = new File($entry, $this);
+				$thing->stat();
 				$this->content[] = $thing;
-			} else if(is_dir($currentPath . DIRECTORY_SEPARATOR . $entry)) {
+			} else if(is_dir($filename)) {
 				$thing = new Directory($entry, $this);
+				$thing->stat();
 				$thing->buildTree();
 				$this->content[] = $thing;
 			}
@@ -67,6 +73,10 @@ class Directory {
 
 	private function setParent(Directory &$parent) {
 		$this->parent = $parent;
+	}
+
+	private function stat() {
+		$this->doStat($this->getPath());
 	}
 
 	public function __clone() {

@@ -8,8 +8,8 @@ namespace lvps\MechatronicAnvil;
 
 
 class File {
-	/** @var \DateTime|NULL */
-	private $dateTime;
+	use Stat;
+
 	/** @var string|NULL */
 	private $name;
 	/** @var string|NULL */
@@ -38,10 +38,13 @@ class File {
 		$this->name = $name;
 	}
 
-	public function __clone() {
-		// TODO: if(!NULL)?
-		$this->dateTime = clone $this->dateTime;
+	//public function __clone() {
 		// don't clone renderFrom, it points to a File in another Directory tree and should stay that way.
+	//}
+
+	public function stat() {
+		$filename = $this->getFilename();
+		$this->doStat($filename);
 	}
 
 	public function getContents(): string {
