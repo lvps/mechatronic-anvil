@@ -8,11 +8,23 @@ namespace lvps\MechatronicAnvil;
 
 require __DIR__ . '/vendor/autoload.php';
 
-// TODO: move to configuration file
-define('INPUT', '../input');
-define('OUTPUT', '../output');
+if(!defined('INPUT')) {
+	throw new \Exception('INPUT not defined!');
+}
+if(!defined('OUTPUT')) {
+	throw new \Exception('OUTPUT not defined!');
+}
+if(!function_exists('onRead')) {
+	function onRead(Directory &$output) {}
+}
+if(!function_exists('onParsed')) {
+	function onParsed(Directory &$output) {}
+}
+if(!function_exists('onRendered')) {
+	function onRendered(Directory &$output) {}
+}
 
 $inputTree = new Directory(INPUT);
 $inputTree->buildTree();
-//$outputTree = $inputTree->buildOutputTree();
-
+$output = $inputTree->buildOutputTree(new Directory(OUTPUT));
+onRead($output);
