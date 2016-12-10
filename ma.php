@@ -7,3 +7,9 @@
 namespace lvps\MechatronicAnvil;
 
 require __DIR__ . '/vendor/autoload.php';
+
+// TODO: move to configuration file
+define('INPUT', '../input');
+define('OUTPUT', '../output');
+
+$inputTree = new Directory(INPUT);

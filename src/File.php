@@ -11,48 +11,37 @@ class File {
 	/** @var \DateTime|NULL */
 	private $dateTime;
 	/** @var string|NULL */
-	private $path;
+	private $name;
 	/** @var string|NULL */
 	private $hash;
-	/** @var bool */
-	private $io;
-	/** @var string */
-	private $inputDirectory;
-	/** @var string */
-	private $outputDirectory;
-
-	// binary "enum"
-	const INPUT = true;
-	const OUTPUT = false;
+	/** @var File|NULL */
+	private $renderFrom;
+	/** @var Directory */
+	private $parent;
 
 	/**
 	 * File constructor.
 	 *
-	 * @param bool $io File::INPUT or File::OUTPUT
-	 * @param string $inputDirectory
-	 * @param string $outputDirectory
+	 * @param string $name file name
+	 * @param Directory $parent Directory where file is located
+	 * @param File|NULL $from input file to be rendered\copied into this output file
 	 */
-	function __construct(boolean $io, string $inputDirectory, string $outputDirectory) {
-		$this->io = $io;
-		$this->inputDirectory = $inputDirectory;
-		$this->outputDirectory = $outputDirectory;
+	function __construct(string $name, Directory $parent, File &$from = NULL) {
+		if($name === NULL || $name === '') {
+			throw new \InvalidArgumentException('File names cannot be empty!');
+		}
+		if(!($parent instanceof Directory)) {
+			throw new \InvalidArgumentException('$parent must be a Directory object!');
+		}
+		$this->renderFrom = $from;
+		$this->parent = $parent;
+		$this->name = $name;
 	}
 
 	public function __clone() {
 		// TODO: if(!NULL)?
 		$this->dateTime = clone $this->dateTime;
-	}
-
-	/**
-	 * If it's an input file: clone and return an output file.
-	 * If it's an output file: clone and return an input file.
-	 *
-	 * @return File
-	 */
-	public function cloneToInputOutput(): File {
-		$file = clone $this;
-		$file->io = !($file->io);
-		return $file;
+		$this->parent = clone $this->parent;
 	}
 
 	public function getContents(): string {
@@ -60,10 +49,6 @@ class File {
 	}
 
 	public function getFilename(): string {
-		if($this->io === self::INPUT) {
-			return $this->inputDirectory . DIRECTORY_SEPARATOR . $this->path;
-		} else {
-			return $this->outputDirectory . DIRECTORY_SEPARATOR . $this->path;
-		}
+		return $this->parent->getPath() . DIRECTORY_SEPARATOR . $this->name;
 	}
 }
