@@ -8,7 +8,7 @@ namespace lvps\MechatronicAnvil;
 
 
 class Directory implements HasParent {
-	use Stat;
+	use Stat, HasMetadata;
 
 	/** @var string */
 	private $name;
@@ -152,7 +152,9 @@ class Directory implements HasParent {
 			throw new \InvalidArgumentException('$onDirLeave must be callable or NULL!');
 		}
 
+		$onDirEnter === NULL ?: call_user_func($onDirEnter, $this);
 		$this->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
+		$onDirEnter === NULL ?: call_user_func($onDirLeave, $this);
 	}
 
 	/**
@@ -215,5 +217,19 @@ class Directory implements HasParent {
 		} else {
 			$this->parent->reRoot($root);
 		}
+	}
+
+	/**
+	 * @return Metadata|NULL
+	 */
+	public function getMetadata() {
+		return $this->metadata;
+	}
+
+	/**
+	 * @param Metadata|NULL $metadata
+	 */
+	public function setMetadata($metadata) {
+		$this->metadata = $metadata;
 	}
 }

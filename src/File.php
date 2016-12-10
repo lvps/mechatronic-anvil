@@ -8,7 +8,7 @@ namespace lvps\MechatronicAnvil;
 
 
 class File implements HasParent {
-	use Stat;
+	use Stat, HasMetadata;
 
 	/** @var string|NULL */
 	private $name;
@@ -18,8 +18,6 @@ class File implements HasParent {
 	private $renderFrom;
 	/** @var Directory */
 	private $parent;
-	/** @var Metadata|NULL */
-	private $metadata = NULL;
 	/** @var Parser|NULL */
 	private $parser = NULL;
 
@@ -93,24 +91,6 @@ class File implements HasParent {
 	 */
 	public function setParser($parser) {
 		$this->parser = $parser;
-	}
-
-	public function addMetadataOnTop(Metadata $other) {
-		if($this->metadata === NULL) {
-			$this->metadata = $other;
-			return;
-		}
-
-		$this->metadata = $other->merge($this->metadata);
-	}
-
-	public function addMetadataOnBottom(Metadata $other) {
-		if($this->metadata === NULL) {
-			$this->metadata = $other;
-			return;
-		}
-
-		$this->metadata = $this->metadata->merge($other);
 	}
 
 	public function __toString(): string {

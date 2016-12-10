@@ -11,8 +11,6 @@ class Metadata implements \ArrayAccess {
 	/** @var array */
 	private $metadata = [];
 	/** @var bool */
-	private $global = false;
-	/** @var bool */
 	private $inheritable = false;
 
 	public function offsetExists($offset): bool {
@@ -36,20 +34,6 @@ class Metadata implements \ArrayAccess {
 	}
 
 	/**
-	 * @param boolean $global
-	 */
-	public function setGlobal(bool $global) {
-		$this->global = $global;
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function isGlobal(): bool {
-		return $this->global;
-	}
-
-	/**
 	 * @param boolean $inheritable
 	 */
 	public function setInheritable(bool $inheritable) {
@@ -70,6 +54,26 @@ class Metadata implements \ArrayAccess {
 	 */
 	public function merge(Metadata $other) {
 		$this->metadata = array_merge($other->metadata, $this->metadata);
+	}
+
+	private function mergeOtherOverThis(Metadata $other) {
+		$this->metadata = array_merge($this->metadata, $other->metadata);
+	}
+
+	/**
+	 * Very ad hoc method. Does THINGS.
+	 *
+	 * @param array $metadataStack array of Metadata or NULL.
+	 */
+	public function replaceFromInheritableStack(array $metadataStack) {
+		$this->metadata = [];
+		foreach($metadataStack as $metadata) {
+			if($metadata !== NULL && $metadata instanceof Metadata) {
+				if($metadata->isInheritable) {
+					$this->mergeOtherOverThis($metadata);
+				}
+			}
+		}
 	}
 }
 
