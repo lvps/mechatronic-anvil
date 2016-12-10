@@ -13,3 +13,4 @@ define('INPUT', '../input');
 define('OUTPUT', '../output');
 
 $inputTree = new Directory(INPUT);
+$inputTree->buildTree();

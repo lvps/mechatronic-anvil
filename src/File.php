@@ -26,7 +26,7 @@ class File {
 	 * @param Directory $parent Directory where file is located
 	 * @param File|NULL $from input file to be rendered\copied into this output file
 	 */
-	function __construct(string $name, Directory $parent, File &$from = NULL) {
+	function __construct(string $name, Directory &$parent, File &$from = NULL) {
 		if($name === NULL || $name === '') {
 			throw new \InvalidArgumentException('File names cannot be empty!');
 		}
@@ -41,7 +41,7 @@ class File {
 	public function __clone() {
 		// TODO: if(!NULL)?
 		$this->dateTime = clone $this->dateTime;
-		$this->parent = clone $this->parent;
+		// don't clone renderFrom, it points to a File in another Directory tree and should stay that way.
 	}
 
 	public function getContents(): string {
@@ -50,5 +50,23 @@ class File {
 
 	public function getFilename(): string {
 		return $this->parent->getPath() . DIRECTORY_SEPARATOR . $this->name;
+	}
+
+	public function setParent(Directory &$parent) {
+		$this->parent = $parent;
+	}
+
+	/**
+	 * @return File|NULL
+	 */
+	public function getRenderFrom() {
+		return $this->renderFrom;
+	}
+
+	/**
+	 * @param File|NULL $renderFrom
+	 */
+	public function setRenderFrom($renderFrom) {
+		$this->renderFrom = $renderFrom;
 	}
 }
