@@ -206,7 +206,6 @@ class Directory implements HasParent {
 		}
 	}
 
-	// this is probably the only place where "&" is really needed, but whatever.
 	public function reRoot(Directory &$root) {
 		if($this->parent === NULL) {
 			$root->content = $this->content;
