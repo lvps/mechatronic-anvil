@@ -21,7 +21,13 @@ class Markdown implements Parser {
 		return;
 	}
 
-	public function render(File $file): string {
+	public function renderToString(File $file): string {
 		return MarkdownExtra::defaultTransform($file->getRenderFrom()->getContents());
+	}
+
+	public function renderToFile(File $file) {
+		file_put_contents($file->getFilename(), $this->renderToString($file));
+		$file->applyMtime();
+		$file->applyMode();
 	}
 }

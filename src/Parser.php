@@ -19,12 +19,13 @@ Interface Parser {
 	 */
 	public function parse(File &$file);
 
+	public function renderToString(File $file);
+
 	/**
-	 * Render File to a string. This is called only after everything has been parse()d.
-	 * If NULL is returned, content has been placed directly in the output file!
+	 * Render File to its FINAL destination™.
 	 *
 	 * @param File $file
-	 * @return string
+	 * @return void
 	 */
-	public function render(File $file): string;
+	public function renderToFile(File $file);
 }

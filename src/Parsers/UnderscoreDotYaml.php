@@ -25,7 +25,11 @@ class UnderscoreDotYaml implements Parser {
 		$file->doNotRender();
 	}
 
-	public function render(File $file): string {
-		return NULL;
+	public function renderToString(File $file): string {
+		return '';
+	}
+
+	public function renderToFile(File $file) {
+		return;
 	}
 }

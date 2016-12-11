@@ -59,8 +59,14 @@ class MarkdownWithYAMLFrontMatter implements Parser {
 		return NULL;
 	}
 
-	public function render(File $file): string {
+	public function renderToString(File $file): string {
 		$pieces = $this->split($file->getRenderFrom());
 		return MarkdownExtra::defaultTransform($pieces[1]);
+	}
+
+	public function renderToFile(File $file) {
+		file_put_contents($file->getFilename(), $this->renderToString($file));
+		$file->applyMtime();
+		$file->applyMode();
 	}
 }
