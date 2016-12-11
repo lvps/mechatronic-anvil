@@ -45,15 +45,15 @@ $metadataStack = [];
 $currentInheritableMetadata = new Metadata();
 $currentInheritableMetadata->setInheritable(true);
 $currentGlobalMetadata = NULL;
-$output->recursiveWalkCallback(function(File $file) use ($metadataStack, $currentInheritableMetadata, $currentGlobalMetadata) {
+$output->recursiveWalkCallback(function(File $file) use ($currentInheritableMetadata, $currentGlobalMetadata) {
 	// we're doing everything "in reverse", but basically: inheritable is overwritten by global which is overwritten by local.
 	$file->addMetadataOnBottom($currentGlobalMetadata);
 	$file->addMetadataOnBottom($currentInheritableMetadata);
-}, function(Directory $entering) use ($metadataStack, $currentInheritableMetadata, $currentGlobalMetadata) {
+}, function(Directory $entering) use (&$metadataStack, &$currentInheritableMetadata, &$currentGlobalMetadata) {
 	$currentGlobalMetadata = $entering->getMetadata();
 	$metadataStack[] = $currentGlobalMetadata;
 	$currentInheritableMetadata->replaceFromInheritableStack($metadataStack);
-}, function(Directory $leaving) use ($metadataStack, $currentInheritableMetadata, $currentGlobalMetadata, $output) {
+}, function(Directory $leaving) use (&$metadataStack, &$currentInheritableMetadata, &$currentGlobalMetadata, $output) {
 	// root directory has no parent
 	if($leaving === $output) {
 		$currentGlobalMetadata = NULL;

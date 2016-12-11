@@ -8,7 +8,6 @@ namespace lvps\MechatronicAnvil\Parsers;
 use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
-use Michelf\MarkdownExtra;
 
 
 class YamlForMarkdown implements Parser{
@@ -27,9 +26,8 @@ class YamlForMarkdown implements Parser{
 		$found = NULL;
 		$search = $file->getBasenameWithoutExtension();
 
-		$file->getParent()->walkCallback(function(File $file) use ($search, $found) {
+		$file->getParent()->walkCallback(function(File $file) use ($search, &$found) {
 			if($file->getBasenameWithoutExtension() === $search && $file->getExtension() === 'md') {
-				// TODO: test this
 				$found = $file;
 			}
 		});
