@@ -82,7 +82,7 @@ class Metadata implements \ArrayAccess {
 		$this->metadata = [];
 		foreach($metadataStack as $metadata) {
 			if($metadata !== NULL && $metadata instanceof Metadata) {
-				if($metadata->isInheritable) {
+				if($metadata->isInheritable()) {
 					$this->mergeOtherOverThis($metadata);
 				}
 			}

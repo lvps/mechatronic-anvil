@@ -22,12 +22,31 @@ trait Stat {
 		$this->mtime = filemtime($filename);
 	}
 
-	public function getMtime(): int {
+	/**
+	 * @return int|NULL
+	 */
+	public function getMtime() {
 		return $this->mtime;
 	}
 
-	public function getMode(): int {
+	/**
+	 * @return int|NULL
+	 */
+	public function getMode() {
 		return $this->mode;
 	}
 
+	public function applyMtime() {
+		if(($mtime = $this->getMtime()) === NULL) {
+			return;
+		}
+		touch($this->getFilename(), $mtime);
+	}
+
+	public function applyMode() {
+		if(($mode = $this->getMode()) === NULL) {
+			return;
+		}
+		chmod($this->getFilename(), $mode);
+	}
 }

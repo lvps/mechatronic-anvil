@@ -83,6 +83,11 @@ class Directory implements HasParent {
 		$this->doStat($this->getPath());
 	}
 
+	// kludge, only called by doStat()
+	private function getFilename(): string {
+		return $this->getPath();
+	}
+
 	public function __clone() {
 		foreach($this->content as $i => $item) {
 			// clone each file and directory

@@ -59,6 +59,6 @@ trait HasMetadata {
 	 * @return Metadata|NULL
 	 */
 	public function getMetadata(): Metadata {
-		return $this->metadata;
+		return $this->metadata === NULL ? new Metadata() : $this->metadata ;
 	}
 }

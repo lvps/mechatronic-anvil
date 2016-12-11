@@ -24,6 +24,9 @@ if(!function_exists('onRead')) {
 if(!function_exists('onParsed')) {
 	function onParsed(Directory &$output) {}
 }
+if(!function_exists('onMerged')) {
+	function onMerged(Directory &$output) {}
+}
 if(!function_exists('onRendered')) {
 	function onRendered(Directory &$output) {}
 }
@@ -32,9 +35,12 @@ $inputTree = new Directory(INPUT);
 $inputTree->buildTree();
 $output = $inputTree->buildOutputTree(new Directory(OUTPUT));
 onRead($output);
+
 $output->recursiveWalkCallback(function(File $file) use ($parsers) {
-	$parsers->tryMatch($file);
+	$parsers->tryParse($file);
 });
+onParsed($output);
+
 $metadataStack = [];
 $currentInheritableMetadata = new Metadata();
 $currentInheritableMetadata->setInheritable(true);
@@ -57,6 +63,21 @@ $output->recursiveWalkCallback(function(File $file) use ($metadataStack, $curren
 	array_pop($metadataStack);
 	$currentInheritableMetadata->replaceFromInheritableStack($metadataStack);
 });
-onParsed($output);
+onMerged($output);
 
-//onRendered($output);
+$output->recursiveWalkCallback(function(File $file) {
+	if($file->getDoRender()) {
+		$file->render();
+	}
+	$file->applyMode();
+	$file->applyMtime();
+}, function(Directory $entering) {
+	$path = $entering->getPath();
+	if(!is_dir($path)) {
+		mkdir($path);
+	}
+	$entering->applyMode();
+}, function(Directory $leaving) {
+	$leaving->applyMtime();
+});
+onRendered($output);

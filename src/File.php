@@ -118,14 +118,9 @@ class File implements HasParent {
 		$this->doRender = false;
 	}
 
-	public function renderToString(): string {
+	public function render() {
 		$this->makesSenseToRender();
-		return $this->parser->render($this);
-	}
-
-	public function renderToFile() {
-		$this->makesSenseToRender();
-		return $this->parser->render($this);
+		$this->parser->renderToFile($this);
 	}
 
 	private function makesSenseToRender() {

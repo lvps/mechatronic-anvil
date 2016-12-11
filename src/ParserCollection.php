@@ -25,10 +25,11 @@ class ParserCollection {
 		}
 	}
 
-	public function tryMatch(File &$file) {
+	public function tryParse(File &$file) {
 		$i = count($this->parsers);
 		while($i--) {
 			if($this->parsers[$i]->canParse($file)) {
+				$file->setParser($this->parsers[$i]);
 				$this->parsers[$i]->parse($file);
 				return;
 			}
