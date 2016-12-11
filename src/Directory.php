@@ -218,18 +218,4 @@ class Directory implements HasParent {
 			$this->parent->reRoot($root);
 		}
 	}
-
-	/**
-	 * @return Metadata|NULL
-	 */
-	public function getMetadata() {
-		return $this->metadata;
-	}
-
-	/**
-	 * @param Metadata|NULL $metadata
-	 */
-	public function setMetadata($metadata) {
-		$this->metadata = $metadata;
-	}
 }

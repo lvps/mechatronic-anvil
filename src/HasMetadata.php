@@ -51,6 +51,10 @@ trait HasMetadata {
 		$this->metadata = $this->metadata->merge($other);
 	}
 
+	public function setMetadata(Metadata $metadata) {
+		$this->metadata = $metadata;
+	}
+
 	/**
 	 * @return Metadata|NULL
 	 */
