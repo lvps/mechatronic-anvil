@@ -14,12 +14,12 @@ class PlainCopy implements Parser {
 		return true;
 	}
 
-	public function renderToString(File $file): string {
-		return $file->getContents();
-	}
-
-	public function renderToFile(File $file) {
-		// TODO: implement this
+	public function render(File $file): string {
+		$output = $file->getFilename();
+		copy($file->getRenderFrom()->getFilename(), $output);
+		chmod($output, $file->getMode());
+		touch($output, $file->getMtime());
+		return NULL;
 	}
 
 	public function parse(File &$file) {
