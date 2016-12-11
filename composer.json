@@ -1,6 +1,4 @@
 {
-    "name": "lvps/mechatronic-anvil",
-    "description": "asd",
     "type": "project",
     "require": {
         "michelf/php-markdown": "^1.7",
