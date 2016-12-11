@@ -13,6 +13,19 @@ class Metadata implements \ArrayAccess {
 	/** @var bool */
 	private $inheritable = false;
 
+	/**
+	 * Metadata constructor.
+	 *
+	 * @param string|NULL $metadata
+	 * @param bool $inheritable if this metadata applies to subdirectories too (makes sense only on a directory), default false
+	 */
+	public function __construct(string $metadata = NULL, bool $inheritable = false) {
+		if(is_array($metadata)) {
+			$this->metadata = $metadata;
+		}
+		$this->inheritable = (bool) $inheritable;
+	}
+
 	public function offsetExists($offset): bool {
 		return isset($this->metadata[$offset]);
 	}

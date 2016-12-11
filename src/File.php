@@ -20,6 +20,8 @@ class File implements HasParent {
 	private $parent;
 	/** @var Parser|NULL */
 	private $parser = NULL;
+	/** @var bool */
+	private $doRender = true;
 
 	/**
 	 * File constructor.
@@ -57,6 +59,24 @@ class File implements HasParent {
 		return $this->parent->getPath() . DIRECTORY_SEPARATOR . $this->name;
 	}
 
+	public function getBasename(): string {
+		return $this->name;
+	}
+
+	public function getBasenameWithoutExtension(): string {
+		$pieces = explode(".", $this->name, 2);
+		return $pieces[0];
+	}
+
+	public function getExtension(): string {
+		$pieces = explode(".", $this->name, 2);
+		if($pieces > 0) {
+			return $pieces[1];
+		} else {
+			return '';
+		}
+	}
+
 	public function setParent(Directory &$parent) {
 		$this->parent = $parent;
 	}
@@ -80,13 +100,6 @@ class File implements HasParent {
 	}
 
 	/**
-	 * @return Parser|NULL
-	 */
-	public function getParser() {
-		return $this->parser;
-	}
-
-	/**
 	 * @param Parser|NULL $parser
 	 */
 	public function setParser($parser) {
@@ -95,5 +108,32 @@ class File implements HasParent {
 
 	public function __toString(): string {
 		return $this->getFilename();
+	}
+
+	public function getDoRender(): bool {
+		return $this->doRender;
+	}
+
+	public function doNotRender() {
+		$this->doRender = false;
+	}
+
+	public function renderToString(): string {
+		$this->makesSenseToRender();
+		return $this->parser->renderToString($this);
+	}
+
+	public function renderToFile() {
+		$this->makesSenseToRender();
+		return $this->parser->renderToString($this);
+	}
+
+	private function makesSenseToRender() {
+		if(!$this->getDoRender()) {
+			throw new \LogicException($this.' isn\'t a renderizable file!');
+		}
+		if(!($this->parser instanceof Parser)) {
+			throw new \LogicException('No valid parser set for '.$this.'!');
+		}
 	}
 }
