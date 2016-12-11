@@ -27,7 +27,7 @@ class MarkdownWithYAMLFrontMatter implements Parser {
 
 	public function parse(File &$file) {
 		$pieces = $this->split($file->getRenderFrom());
-		$file->setMetadata(new Metadata($this->yamlParse($pieces[0])));
+		$file->addMetadataOnTop(new Metadata($this->yamlParse($pieces[0])));
 	}
 
 	private function removeStartingSeparator(string $content): string {
