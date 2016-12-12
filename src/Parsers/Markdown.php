@@ -22,6 +22,7 @@ class Markdown implements Parser {
 	}
 
 	public function renderToString(File $file): string {
+		// TODO: add template in a trait
 		return MarkdownExtra::defaultTransform($file->getRenderFrom()->getContents());
 	}
 
