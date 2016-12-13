@@ -10,6 +10,8 @@ use lvps\MechatronicAnvil\Parser;
 use Michelf\MarkdownExtra;
 
 class Markdown implements Parser {
+	use PHPTemplate;
+
 	public function canParse(File $what): bool {
 		if(strtolower($what->getExtension()) === 'md') {
 			return true;
@@ -18,12 +20,13 @@ class Markdown implements Parser {
 	}
 
 	public function parse(File &$file) {
+		$file->setBasename($file->getBasename() . '.html');
 		return;
 	}
 
 	public function renderToString(File $file): string {
-		// TODO: add template in a trait
-		return MarkdownExtra::defaultTransform($file->getRenderFrom()->getContents());
+		$content = MarkdownExtra::defaultTransform($file->getRenderFrom()->getContents());
+		return $this->render($this->getTemplate($file->getMetadata()), $file, $content);
 	}
 
 	public function renderToFile(File $file) {

@@ -31,15 +31,19 @@ class File implements HasParent {
 	 * @param File|NULL $from input file to be rendered\copied into this output file
 	 */
 	function __construct(string $name, Directory &$parent, File &$from = NULL) {
-		if($name === NULL || $name === '') {
-			throw new \InvalidArgumentException('File names cannot be empty!');
-		}
+		$this->checkName($name);
 		if(!($parent instanceof Directory)) {
 			throw new \InvalidArgumentException('$parent must be a Directory object!');
 		}
 		$this->renderFrom = $from;
 		$this->parent = $parent;
 		$this->name = $name;
+	}
+
+	private function checkName(string $name) {
+		if($name === NULL || $name === '') {
+			throw new \InvalidArgumentException('File names cannot be empty!');
+		}
 	}
 
 	//public function __clone() {
@@ -57,6 +61,11 @@ class File implements HasParent {
 
 	public function getFilename(): string {
 		return $this->parent->getPath() . DIRECTORY_SEPARATOR . $this->name;
+	}
+
+	public function setBasename(string $basename) {
+		$this->checkName($basename);
+		$this->name = $basename;
 	}
 
 	public function getBasename(): string {

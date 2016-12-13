@@ -13,7 +13,7 @@ use lvps\MechatronicAnvil\Parser;
 use Michelf\MarkdownExtra;
 
 class MarkdownWithYAMLFrontMatter implements Parser {
-	use YamlParserWrapper;
+	use YamlParserWrapper, PHPTemplate;
 
 	public function canParse(File $what): bool {
 		if(strtolower($what->getExtension()) === 'md') {
@@ -27,6 +27,7 @@ class MarkdownWithYAMLFrontMatter implements Parser {
 
 	public function parse(File &$file) {
 		$pieces = $this->split($file->getRenderFrom());
+		$file->setBasename($file->getBasename() . '.html');
 		$file->addMetadataOnTop(new Metadata($this->yamlParse($pieces[0])));
 	}
 
@@ -61,7 +62,8 @@ class MarkdownWithYAMLFrontMatter implements Parser {
 
 	public function renderToString(File $file): string {
 		$pieces = $this->split($file->getRenderFrom());
-		return MarkdownExtra::defaultTransform($pieces[1]);
+		$content = MarkdownExtra::defaultTransform($pieces[1]);
+		return $this->render($this->getTemplate($file->getMetadata()), $file, $content);
 	}
 
 	public function renderToFile(File $file) {
