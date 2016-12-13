@@ -9,10 +9,22 @@ namespace lvps\MechatronicAnvil;
 require __DIR__ . '/vendor/autoload.php';
 
 if(!defined('INPUT')) {
-	throw new \Exception('INPUT not defined!');
+	define('INPUT', 'input');
+}
+if(!is_dir(INPUT)) {
+	throw new \Exception('Input directory ('.INPUT.') is not a directory!');
 }
 if(!defined('OUTPUT')) {
-	throw new \Exception('OUTPUT not defined!');
+	define('OUTPUT', 'output');
+}
+if(!is_dir(OUTPUT)) {
+	throw new \Exception('Output directory ('.OUTPUT.') is not a directory!');
+}
+if(!defined('TEMPLATES')) {
+	define('TEMPLATES', 'templates');
+}
+if(!is_dir(TEMPLATES)) {
+	throw new \Exception('Templates directory ('.TEMPLATES.') is not a directory!');
 }
 if(!isset($parsers) || !($parsers instanceof ParserCollection)) {
 	$parsers = new ParserCollection();
