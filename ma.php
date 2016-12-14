@@ -28,6 +28,10 @@ if(!is_dir(TEMPLATES)) {
 }
 if(!isset($parsers) || !($parsers instanceof ParserCollection)) {
 	$parsers = new ParserCollection();
+	$parsers->pushParser(new Parsers\Markdown());
+	$parsers->pushParser(new Parsers\MarkdownWithYAMLFrontMatter());
+	$parsers->pushParser(new Parsers\YamlForMarkdown());
+	$parsers->pushParser(new Parsers\UnderscoreDotYaml());
 	// TODO: set some defaults
 }
 if(!function_exists('onRead')) {
@@ -78,9 +82,10 @@ $output->recursiveWalkCallback(function(File $file) use ($currentInheritableMeta
 onMerged($output);
 
 $output->recursiveWalkCallback(function(File $file) {
-	if($file->getDoRender()) {
-		$file->render();
+	if(!$file->getDoRender()) {
+		return;
 	}
+	$file->render();
 	$file->applyMode();
 	$file->applyMtime();
 }, function(Directory $entering) {

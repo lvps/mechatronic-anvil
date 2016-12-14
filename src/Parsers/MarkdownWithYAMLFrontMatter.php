@@ -36,7 +36,7 @@ class MarkdownWithYAMLFrontMatter implements Parser {
 	}
 
 	private function split(File $file): array {
-		$content = $this->removeStartingSeparator(($file->getRenderFrom()->getContents()));
+		$content = $this->removeStartingSeparator(($file->getContents()));
 		$completeSeparator = $this->separatorType($content);
 		if($completeSeparator === NULL) {
 			throw new \LogicException('Can\'t parse '.$file.': missing --- separator!');

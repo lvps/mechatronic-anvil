@@ -21,7 +21,7 @@ class UnderscoreDotYaml implements Parser {
 
 	public function parse(File &$file) {
 		// move metadata to parent directory, don't render file
-		$file->setMetadata(new Metadata($this->yamlParse($file->getRenderFrom()->getContents()), true));
+		$file->getParent()->setMetadata(new Metadata($this->yamlParse($file->getRenderFrom()->getContents()), true));
 		$file->doNotRender();
 	}
 
