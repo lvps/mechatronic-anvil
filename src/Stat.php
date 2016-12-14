@@ -36,17 +36,25 @@ trait Stat {
 		return $this->mode;
 	}
 
+	private function getTargetFilename() {
+		if($this instanceof File) {
+			return $this->getFilename();
+		} else { // Directory
+			return $this->getPath();
+		}
+	}
+
 	public function applyMtime() {
 		if(($mtime = $this->getMtime()) === NULL) {
 			return;
 		}
-		touch($this->getFilename(), $mtime);
+		touch($this->getTargetFilename(), $mtime);
 	}
 
 	public function applyMode() {
 		if(($mode = $this->getMode()) === NULL) {
 			return;
 		}
-		chmod($this->getFilename(), $mode);
+		chmod($this->getTargetFilename(), $mode);
 	}
 }
