@@ -31,7 +31,7 @@ class Metadata implements \ArrayAccess {
 	}
 
 	public function offsetGet($offset) {
-		return $this->offsetExists($this->metadata[$offset]) ? $this->metadata[$offset] : NULL;
+		return $this->offsetExists($offset) ? $this->metadata[$offset] : NULL;
 	}
 
 	public function offsetSet($offset, $value) {

@@ -12,13 +12,13 @@ use lvps\MechatronicAnvil\Metadata;
 
 trait PHPTemplate {
 	private function render(string $templatePath, File $file, string $content): string {
-			$metadata = (array) $file->getMetadata(); // this works, surprisingly.
-			$file_name = $file->getBasename();
-			$file_path = $file->getFilename();
-			unset($md); // avoid chaos
-			ob_start();
-			include $templatePath;
-			return ob_get_clean();
+		$metadata = (array) $file->getMetadata(); // this works, surprisingly.
+		$file_name = $file->getBasename();
+		$file_path = $file->getFilename();
+		unset($md); // avoid chaos
+		ob_start();
+		include $templatePath;
+		return ob_get_clean();
 	}
 
 	private function getTemplate(Metadata $md): string {
