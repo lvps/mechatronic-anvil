@@ -86,7 +86,7 @@ class File implements HasParent {
 		}
 	}
 
-	public function setParent(Directory &$parent) {
+	public function setParent(Directory $parent) {
 		$this->parent = $parent;
 	}
 

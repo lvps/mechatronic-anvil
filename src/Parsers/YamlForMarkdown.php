@@ -20,7 +20,7 @@ class YamlForMarkdown implements Parser{
 		return false;
 	}
 
-	public function parse(File &$file) {
+	public function parse(File $file) {
 		$metadata = new Metadata($this->yamlParse($file->getRenderFrom()->getContents()));
 
 		$found = NULL;

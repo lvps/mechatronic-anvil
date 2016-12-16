@@ -25,7 +25,7 @@ class ParserCollection {
 		}
 	}
 
-	public function tryParse(File &$file) {
+	public function tryParse(File $file) {
 		$i = count($this->parsers);
 		while($i--) {
 			if($this->parsers[$i]->canParse($file)) {

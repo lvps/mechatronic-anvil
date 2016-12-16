@@ -8,6 +8,6 @@ namespace lvps\MechatronicAnvil;
 
 
 interface HasParent {
-	public function setParent(Directory &$parent);
+	public function setParent(Directory $parent);
 	public function getParent(): Directory;
 }

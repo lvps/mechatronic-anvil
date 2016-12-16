@@ -52,7 +52,7 @@ $inputTree->buildTree();
 $output = $inputTree->buildOutputTree(new Directory(OUTPUT));
 onRead($output);
 
-$output->recursiveWalkCallback(function(File $file) use ($parsers) {
+$output->recursiveWalkCallback(function(File $file) use ($parsers, $output) {
 	$parsers->tryParse($file);
 });
 onParsed($output);

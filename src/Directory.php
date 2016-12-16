@@ -71,7 +71,7 @@ class Directory implements HasParent {
 		}
 	}
 
-	public function setParent(Directory &$parent) {
+	public function setParent(Directory $parent) {
 		$this->parent = $parent;
 	}
 
@@ -118,8 +118,7 @@ class Directory implements HasParent {
 		$this->recursiveWalkCallback($linkFilesToThemselves, NULL, NULL);
 		$copy = clone $this;
 		$this->recursiveWalkCallback($linkFilesToNULL, NULL, NULL);
-		$copy->reRoot($newRoot);
-		return $copy;
+		return $copy->reRoot($newRoot);
 	}
 
 	private function isCallableOrNull($what): bool {
@@ -175,46 +174,56 @@ class Directory implements HasParent {
 			throw new \InvalidArgumentException('$onDir must be callable or NULL!');
 		}
 
-		foreach($this->content as $item) {
+		foreach($this->content as $i => $item) {
 			if($item instanceof File) {
 				if($onFile !== NULL) {
-					call_user_func($onFile, $item);
+					call_user_func($onFile, $this->content[$i]);
 				}
 			} else {
 				if($onDir !== NULL) {
-					call_user_func($onDir, $item);
+					call_user_func($onDir, $this->content[$i]);
 				}
 			}
 		}
 	}
 
 	private function recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave) {
-		foreach($this->content as $item) {
+		foreach($this->content as $i => $item) {
 			if($item instanceof File) {
 				if($onFile !== NULL) {
-					call_user_func($onFile, $item);
+					call_user_func($onFile, $this->content[$i]);
 				}
 			} else {
 				if($onDirEnter !== NULL) {
-					call_user_func($onDirEnter, $item);
+					call_user_func($onDirEnter, $this->content[$i]);
 				}
 				$item->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
 				if($onDirLeave !== NULL) {
-					call_user_func($onDirLeave, $item);
+					call_user_func($onDirLeave, $this->content[$i]);
 				}
 			}
 		}
 	}
 
-	public function reRoot(Directory &$root) {
+	/**
+	 * Change root directory. Or actually, copy old content into new root.
+	 *
+	 * @param Directory $root new root
+	 * @return Directory new root with old content
+	 */
+	public function reRoot(Directory $root): Directory {
 		if($this->parent === NULL) {
+			// Get old content, place in new root
 			$root->content = $this->content;
-			foreach($root->content as $item) {
+			// for each item in new root ($this)
+			foreach($this->content as $i => $item) {
 				/** @var File|Directory $item */
-				$item->setParent($root);
+				// update its parent
+				$this->content[$i]->setParent($this);
 			}
 		} else {
-			$this->parent->reRoot($root);
+			throw new \LogicException('reRoot called on non-root directory!');
 		}
+		return $root;
 	}
 }

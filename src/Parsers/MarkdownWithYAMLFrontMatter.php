@@ -25,7 +25,7 @@ class MarkdownWithYAMLFrontMatter implements Parser {
 		return false;
 	}
 
-	public function parse(File &$file) {
+	public function parse(File $file) {
 		$pieces = $this->split($file->getRenderFrom());
 		$file->setBasename($file->getBasename() . '.html');
 		$file->addMetadataOnTop(new Metadata($this->yamlParse($pieces[0])));

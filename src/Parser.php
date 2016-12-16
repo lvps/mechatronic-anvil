@@ -17,7 +17,7 @@ Interface Parser {
 	 * @param File $file
 	 * @return void
 	 */
-	public function parse(File &$file);
+	public function parse(File $file);
 
 	public function renderToString(File $file);
 

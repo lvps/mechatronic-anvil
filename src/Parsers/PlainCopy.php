@@ -25,7 +25,7 @@ class PlainCopy implements Parser {
 		return $file->getRenderFrom()->getContents();
 	}
 
-	public function parse(File &$file) {
+	public function parse(File $file) {
 		return;
 	}
 }
