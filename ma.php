@@ -52,32 +52,23 @@ $inputTree->buildTree();
 $output = $inputTree->buildOutputTree(new Directory(OUTPUT));
 onRead($output);
 
-$output->recursiveWalkCallback(function(File $file) use ($parsers, $output) {
+$output->recursiveWalkCallback(function(File $file) use ($parsers) {
 	$parsers->tryParse($file);
 });
 onParsed($output);
 
 $metadataStack = [];
-$currentInheritableMetadata = new Metadata();
-$currentInheritableMetadata->setInheritable(true);
-$currentGlobalMetadata = NULL;
-$output->recursiveWalkCallback(function(File $file) use (&$currentInheritableMetadata, &$currentGlobalMetadata) {
-	// we're doing everything "in reverse", but basically: inheritable is overwritten by global which is overwritten by local.
-	$file->addMetadataOnBottom($currentGlobalMetadata);
-	$file->addMetadataOnBottom($currentInheritableMetadata);
-}, function(Directory $entering) use (&$metadataStack, &$currentInheritableMetadata, &$currentGlobalMetadata) {
-	$currentGlobalMetadata = $entering->getMetadata();
-	$metadataStack[] = $currentGlobalMetadata;
-	$currentInheritableMetadata->replaceFromInheritableStack($metadataStack);
-}, function(Directory $leaving) use (&$metadataStack, &$currentInheritableMetadata, &$currentGlobalMetadata, $output) {
-	// root directory has no parent
-	if($leaving === $output) {
-		$currentGlobalMetadata = NULL;
-	} else {
-		$currentGlobalMetadata = $leaving->getParent()->getMetadata();
-	}
+$currentMetadata = new Metadata();
+$currentMetadata->setInheritable(true);
+$output->recursiveWalkCallback(function(File $file) use (&$currentMetadata) {
+	// we're doing everything "in reverse", but basically: global is overwritten by local.
+	$file->addMetadataOnBottom($currentMetadata);
+}, function(Directory $entering) use (&$metadataStack, &$currentMetadata) {
+	$metadataStack[] = $entering->getMetadata();
+	$currentMetadata->rebuildFromStack($metadataStack);
+}, function(Directory $leaving) use (&$metadataStack, &$currentMetadata, $output) {
 	array_pop($metadataStack);
-	$currentInheritableMetadata->replaceFromInheritableStack($metadataStack);
+	$currentMetadata->rebuildFromStack($metadataStack);
 });
 onMerged($output);
 

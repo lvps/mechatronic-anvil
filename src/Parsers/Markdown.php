@@ -20,7 +20,7 @@ class Markdown implements Parser {
 	}
 
 	public function parse(File $file) {
-		$file->setBasename($file->getBasename() . '.html');
+		$file->setBasename($file->getBasenameWithoutExtension() . '.html');
 		return;
 	}
 

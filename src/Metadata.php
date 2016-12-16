@@ -78,12 +78,15 @@ class Metadata implements \ArrayAccess {
 	 *
 	 * @param array $metadataStack array of Metadata or NULL.
 	 */
-	public function replaceFromInheritableStack(array $metadataStack) {
+	public function rebuildFromStack(array $metadataStack) {
 		$this->metadata = [];
-		foreach($metadataStack as $metadata) {
-			if($metadata !== NULL && $metadata instanceof Metadata) {
-				if($metadata->isInheritable()) {
-					$this->mergeOtherOverThis($metadata);
+		if(($count = count($metadataStack)) > 0) {
+			for($i = 0; $i < $count; $i++) {
+				if($metadataStack[$i] !== NULL && $metadataStack[$i] instanceof Metadata) {
+					// merge all inheritable + last (current directory) regardless
+					if($metadataStack[$i]->isInheritable() || $i === ($count-1)) {
+						$this->mergeOtherOverThis($metadataStack[$i]);
+					}
 				}
 			}
 		}

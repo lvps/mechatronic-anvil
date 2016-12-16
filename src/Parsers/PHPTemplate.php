@@ -12,8 +12,7 @@ use lvps\MechatronicAnvil\Metadata;
 
 trait PHPTemplate {
 	private function render(string $templatePath, File $file, string $content): string {
-			// TODO: does this even work?
-			$metadata = (array) $file->getMetadata();
+			$metadata = (array) $file->getMetadata(); // this works, surprisingly.
 			$file_name = $file->getBasename();
 			$file_path = $file->getFilename();
 			unset($md); // avoid chaos
