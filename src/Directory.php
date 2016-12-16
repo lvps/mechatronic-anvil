@@ -219,7 +219,7 @@ class Directory implements HasParent {
 			foreach($this->content as $i => $item) {
 				/** @var File|Directory $item */
 				// update its parent
-				$this->content[$i]->setParent($this);
+				$this->content[$i]->setParent($root);
 			}
 		} else {
 			throw new \LogicException('reRoot called on non-root directory!');

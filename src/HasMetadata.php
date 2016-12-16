@@ -24,7 +24,7 @@ trait HasMetadata {
 		}
 
 		if($this->metadata === NULL) {
-			$this->metadata = $other;
+			$this->metadata = clone $other;
 			return;
 		}
 
@@ -44,7 +44,7 @@ trait HasMetadata {
 		}
 
 		if($this->metadata === NULL) {
-			$this->metadata = $other;
+			$this->metadata = clone $other;
 			return;
 		}
 
@@ -52,7 +52,7 @@ trait HasMetadata {
 	}
 
 	public function setMetadata(Metadata $metadata) {
-		$this->metadata = $metadata;
+		$this->metadata = clone $metadata;
 	}
 
 	/**

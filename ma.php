@@ -61,7 +61,7 @@ $metadataStack = [];
 $currentInheritableMetadata = new Metadata();
 $currentInheritableMetadata->setInheritable(true);
 $currentGlobalMetadata = NULL;
-$output->recursiveWalkCallback(function(File $file) use ($currentInheritableMetadata, $currentGlobalMetadata) {
+$output->recursiveWalkCallback(function(File $file) use (&$currentInheritableMetadata, &$currentGlobalMetadata) {
 	// we're doing everything "in reverse", but basically: inheritable is overwritten by global which is overwritten by local.
 	$file->addMetadataOnBottom($currentGlobalMetadata);
 	$file->addMetadataOnBottom($currentInheritableMetadata);
