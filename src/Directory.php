@@ -50,7 +50,7 @@ class Directory implements HasParent {
 
 	public function getRelativePath(): string {
 		if($this->parent instanceof Directory) {
-			return $this->parent->getPath() . $this->name . DIRECTORY_SEPARATOR;
+			return $this->parent->getRelativePath() . $this->name . DIRECTORY_SEPARATOR;
 		} else {
 			return '';
 		}

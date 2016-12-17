@@ -47,16 +47,16 @@ if(!($parsers instanceof ParserCollection)) {
 	throw new \Exception('$parsers should be a ParserCollection object or an array!');
 }
 if(!function_exists('onRead')) {
-	function onRead(Directory &$output) {}
+	function onRead(Directory $output) {}
 }
 if(!function_exists('onParsed')) {
-	function onParsed(Directory &$output) {}
+	function onParsed(Directory $output) {}
 }
 if(!function_exists('onMerged')) {
-	function onMerged(Directory &$output) {}
+	function onMerged(Directory $output) {}
 }
 if(!function_exists('onRendered')) {
-	function onRendered(Directory &$output) {}
+	function onRendered(Directory $output) {}
 }
 
 $inputTree = new Directory(INPUT);
