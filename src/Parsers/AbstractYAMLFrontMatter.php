@@ -38,7 +38,7 @@ abstract class AbstractYAMLFrontMatter implements Parser {
 	 * @param string $content
 	 * @return string complete separator (with \n or \r\n), or NULL if not found
 	 */
-	protected static function separatorType(string $content): string {
+	protected static function separatorType(string $content) {
 		if(strpos($content, "\r\n---\r\n") !== false) {
 			return "\r\n---\r\n";
 		}
