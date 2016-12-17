@@ -91,6 +91,15 @@ class Directory implements HasParent {
 		$this->doStat($this->getPath());
 	}
 
+	public function descendInto(string $directory): Directory {
+		foreach($this->content as $i => $item) {
+			if($item instanceof Directory && $item->getName() === $directory) {
+				return $this->content[$i];
+			}
+		}
+		throw new \Exception('Cannot descend into ' . $directory . ': directory does not exist!');
+	}
+
 	public function __clone() {
 		foreach($this->content as $i => $item) {
 			// clone each file and directory

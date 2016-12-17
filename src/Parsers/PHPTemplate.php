@@ -15,7 +15,6 @@ trait PHPTemplate {
 		$metadata = $file->getMetadata();
 		$file_name = $file->getBasename();
 		$file_path = $file->getRelativeFilename();
-		unset($md); // avoid chaos
 		ob_start();
 		include $templatePath;
 		return ob_get_clean();
