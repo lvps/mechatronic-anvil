@@ -61,16 +61,25 @@ class Metadata implements \ArrayAccess {
 	}
 
 	/**
-	 * Merge this object over other metadata (or merge other metadata under this)
+	 * Merge this object over other metadata
 	 *
 	 * @param Metadata $other
+	 * @return NULL
 	 */
-	public function merge(Metadata $other) {
+	public function mergeOver(Metadata $other) {
 		$this->metadata = array_merge($other->metadata, $this->metadata);
+		return NULL;
 	}
 
-	private function mergeOtherOverThis(Metadata $other) {
+	/**
+	 * Merge this object under other metadata
+	 *
+	 * @param Metadata $other
+	 * @return NULL
+	 */
+	public function mergeUnder(Metadata $other) {
 		$this->metadata = array_merge($this->metadata, $other->metadata);
+		return NULL;
 	}
 
 	/**
@@ -85,7 +94,7 @@ class Metadata implements \ArrayAccess {
 				if($metadataStack[$i] !== NULL && $metadataStack[$i] instanceof Metadata) {
 					// merge all inheritable + last (current directory) regardless
 					if($metadataStack[$i]->isInheritable() || $i === ($count-1)) {
-						$this->mergeOtherOverThis($metadataStack[$i]);
+						$this->mergeUnder($metadataStack[$i]);
 					}
 				}
 			}

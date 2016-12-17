@@ -28,7 +28,7 @@ trait HasMetadata {
 			return;
 		}
 
-		$this->metadata = $other->merge($this->metadata);
+		$this->metadata->mergeUnder($other);
 	}
 
 	/**
@@ -48,7 +48,7 @@ trait HasMetadata {
 			return;
 		}
 
-		$this->metadata->merge($other);
+		$this->metadata->mergeOver($other);
 	}
 
 	public function setMetadata(Metadata $metadata) {
