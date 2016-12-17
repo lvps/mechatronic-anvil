@@ -63,6 +63,10 @@ class File implements HasParent {
 		return $this->parent->getPath() . DIRECTORY_SEPARATOR . $this->name;
 	}
 
+	public function getRelativeFilename(): string {
+		return $this->parent->getRelativePath() . $this->name;
+	}
+
 	public function setBasename(string $basename) {
 		$this->checkName($basename);
 		$this->name = $basename;

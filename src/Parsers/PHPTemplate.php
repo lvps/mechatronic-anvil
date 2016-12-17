@@ -14,7 +14,7 @@ trait PHPTemplate {
 	private function render(string $templatePath, File $file, string $content): string {
 		$metadata = $file->getMetadata();
 		$file_name = $file->getBasename();
-		$file_path = $file->getFilename();
+		$file_path = $file->getRelativeFilename();
 		unset($md); // avoid chaos
 		ob_start();
 		include $templatePath;
