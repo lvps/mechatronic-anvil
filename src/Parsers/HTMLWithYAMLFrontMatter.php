@@ -11,11 +11,11 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 use Michelf\MarkdownExtra;
 
-class MarkdownWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Parser {
+class HTMLWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Parser {
 	use YamlParserWrapper, PHPTemplate;
 
 	public function canParse(File $what): bool {
-		if(strtolower($what->getExtension()) === 'md') {
+		if(strtolower($what->getExtension()) === 'html') {
 			$content = $what->getRenderFrom()->getContents();
 			if($this->separatorType($this->removeStartingSeparator($content)) !== NULL) {
 				return true;
@@ -25,6 +25,6 @@ class MarkdownWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Par
 	}
 
 	public function renderInputString(string $what): string {
-		return MarkdownExtra::defaultTransform($what);
+		return $what;
 	}
 }
