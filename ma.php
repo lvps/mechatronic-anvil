@@ -26,13 +26,25 @@ if(!defined('TEMPLATES')) {
 if(!is_dir(TEMPLATES)) {
 	throw new \Exception('Templates directory ('.TEMPLATES.') is not a directory!');
 }
-if(!isset($parsers) || !($parsers instanceof ParserCollection)) {
-	$parsers = new ParserCollection();
-	$parsers->pushParser(new Parsers\Markdown());
-	$parsers->pushParser(new Parsers\MarkdownWithYAMLFrontMatter());
-	$parsers->pushParser(new Parsers\YamlForMarkdown());
-	$parsers->pushParser(new Parsers\UnderscoreDotYaml());
-	// TODO: set some defaults
+if(!isset($parsers)) {
+	$parsers = ['UnderscoreDotYaml', 'YamlForMarkdown', 'MarkdownWithYAMLFrontMatter', 'Markdown'];
+}
+if(is_array($parsers)) {
+	$i = count($parsers);
+	$parsers_new = new ParserCollection();
+	while($i--) {
+		// There are no words to describe this.
+		$parserName = __NAMESPACE__ . '\\Parsers\\' . $parsers[$i];
+		if(!class_exists($parserName)) {
+			throw new \Exception($parserName . ' does not exist!');
+		}
+		$parsers_new->pushParser(new $parserName());
+	}
+	$parsers = $parsers_new;
+	unset($parsers_new);
+}
+if(!($parsers instanceof ParserCollection)) {
+	throw new \Exception('$parsers should be a ParserCollection object or an array!');
 }
 if(!function_exists('onRead')) {
 	function onRead(Directory &$output) {}
