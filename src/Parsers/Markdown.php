@@ -9,6 +9,11 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 use Michelf\MarkdownExtra;
 
+/**
+ * Markdown file with no metadata.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class Markdown implements Parser {
 	use PHPTemplate;
 

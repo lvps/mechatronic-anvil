@@ -9,7 +9,15 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
 
-
+/**
+ * YAML file containing metadata associated with a markdown file.
+ * E.g. example.yaml contains metadata for example.md.
+ * If its "sibling" file isn't found, parse() raises a LogicException.
+ * If its sibling has YAML front matter, that will take priority and overwrite any elements with the same name;
+ * i.e. this metadata is added on bottom of YAML front matter.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class YamlForMarkdown implements Parser{
 	use YamlParserWrapper;
 

@@ -8,6 +8,11 @@ namespace lvps\MechatronicAnvil\Parsers;
 use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 
+/**
+ * Removes comments and whitespace from CSS files.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class CSSMinify implements Parser {
 	private static $remove = ["\r\n", "\r", "\n", "\t", '      ', '     ', '    ', '   ', '  '];
 

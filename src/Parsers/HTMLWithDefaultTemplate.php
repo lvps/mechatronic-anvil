@@ -8,6 +8,12 @@ namespace lvps\MechatronicAnvil\Parsers;
 use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 
+/**
+ * Renders HTML files using the PHPTemplate trait: files contain no metadata and only some plain HTML that will be used
+ * as $content.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class HTMLWithDefaultTemplate implements Parser {
 	use PHPTemplate;
 

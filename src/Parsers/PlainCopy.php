@@ -8,6 +8,12 @@ namespace lvps\MechatronicAnvil\Parsers;
 use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 
+/**
+ * Matches everything, copies file from source to destination.
+ * You shouldn't need to add this parser explicitly, it's already the default in ParserCollection.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class PlainCopy implements Parser {
 
 	public function canParse(File $what): bool {

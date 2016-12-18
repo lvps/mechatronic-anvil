@@ -11,6 +11,12 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 use Michelf\MarkdownExtra;
 
+/**
+ * Markdown file with YAML front matter.
+ * Use `---` to separate content from metadata; `---` at the beginning of file is optional.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class MarkdownWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Parser {
 	use YamlParserWrapper, PHPTemplate;
 

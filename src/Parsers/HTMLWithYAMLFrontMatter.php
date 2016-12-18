@@ -9,8 +9,12 @@ namespace lvps\MechatronicAnvil\Parsers;
 
 use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
-use Michelf\MarkdownExtra;
 
+/**
+ * HTML content with YAML front matter (for metadata). Fed into the PHPTemplate trait.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class HTMLWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Parser {
 	use YamlParserWrapper, PHPTemplate;
 

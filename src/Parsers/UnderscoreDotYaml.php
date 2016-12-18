@@ -9,6 +9,11 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
 
+/**
+ * Parses a YAML file called _.yaml. Its content will be applied to every file in the current directory and every subdirectory in the "merging" phase.
+ *
+ * @package lvps\MechatronicAnvil\Parsers
+ */
 class UnderscoreDotYaml implements Parser {
     use YamlParserWrapper;
 
