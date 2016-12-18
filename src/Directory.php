@@ -23,13 +23,24 @@ class Directory implements HasParent {
 	 * @param string $name directory name
 	 * @param Directory|NULL $parent parent directory or NULL if "root" directory (i.e. INPUT or OUTPUT constant)
 	 */
-	function __construct(string $name, Directory &$parent = NULL) {
+	function __construct(string $name, &$parent = NULL) {
 		$this->setName($name);
 		$this->parent = $parent;
+		if($parent !== NULL) {
+			$parent->appendFile($this);
+		}
 	}
 
 	public function getName(): string {
 		return $this->name;
+	}
+
+	public function appendFile($file) {
+		if($file instanceof File || $file instanceof Directory) {
+			$this->content[] = $file;
+		} else {
+			throw new \InvalidArgumentException('Triend to insert something that\'s neither a File nor a Directory inside a directory!');
+		}
 	}
 
 	public function setName(string $name) {
@@ -69,12 +80,12 @@ class Directory implements HasParent {
 			if(is_file($filename)) {
 				$thing = new File($entry, $this);
 				$thing->stat();
-				$this->content[] = $thing;
+				//$this->content[] = $thing;
 			} else if(is_dir($filename)) {
 				$thing = new Directory($entry, $this);
 				$thing->stat();
 				$thing->buildTree();
-				$this->content[] = $thing;
+				//$this->content[] = $thing;
 			}
 		}
 	}

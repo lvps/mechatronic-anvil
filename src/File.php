@@ -27,14 +27,16 @@ class File implements HasParent {
 	 * @param string $name file name
 	 * @param Directory $parent Directory where file is located
 	 * @param File|NULL $from input file to be rendered\copied into this output file
+	 * @param bool $append 
 	 */
-	function __construct(string $name, Directory &$parent, File &$from = NULL) {
+	function __construct(string $name, Directory &$parent, &$from = NULL, bool $append = false) {
 		$this->checkName($name);
 		if(!($parent instanceof Directory)) {
 			throw new \InvalidArgumentException('$parent must be a Directory object!');
 		}
 		$this->renderFrom = $from;
 		$this->parent = $parent;
+		$this->parent->appendFile($this);
 		$this->name = $name;
 	}
 
