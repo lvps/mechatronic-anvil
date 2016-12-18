@@ -12,8 +12,6 @@ class File implements HasParent {
 
 	/** @var string|NULL */
 	private $name;
-	/** @var string|NULL */
-	private $hash;
 	/** @var File|NULL */
 	private $renderFrom;
 	/** @var Directory */
