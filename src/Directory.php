@@ -67,6 +67,10 @@ class Directory implements HasParent {
 		}
 	}
 
+	public function countContent(): int {
+		return count($this->content);
+	}
+
 	public function buildTree() {
 		$currentPath = $this->getPath();
 
@@ -184,6 +188,78 @@ class Directory implements HasParent {
 		$onDirEnter === NULL ?: call_user_func($onDirLeave, $this);
 	}
 
+	private function recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave) {
+		foreach($this->content as $i => $item) {
+			if($item instanceof File) {
+				if($onFile !== NULL) {
+					call_user_func($onFile, $this->content[$i]);
+				}
+			} else {
+				if($onDirEnter !== NULL) {
+					call_user_func($onDirEnter, $this->content[$i]);
+				}
+				$item->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
+				if($onDirLeave !== NULL) {
+					call_user_func($onDirLeave, $this->content[$i]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Walk through the directory tree recusively and deletes files and directories.
+	 * Calls $onFile for every file, and $onDirEnter & $onDirLeave for every directory encountered.
+	 * Callbacks receive a File or Directory object as the only parameter, and they should return true if the file/directory should be deleted, false otherwise.
+	 * NULL instead of a Callable function means "no action".
+	 * To avoid chaos and destruction, the root directory cannot be deleted ($onDirEnter\$onDirLeave won't be called).
+	 * Directories are deleted as soon as possible: if $onDirEnter returns true, neither $onDirLeave nor $onFile on its content will ever be called!
+	 *
+	 * @param Callable|NULL $onFile return true to delete, false otherwise
+	 * @param Callable|NULL $onDirEnter return true to delete, false otherwise
+	 * @param Callable|NULL $onDirLeave return true to delete, false otherwise
+	 * @see Directory::walkCallback
+	 */
+	public function recursiveDeleteOnCondition($onFile, $onDirEnter = NULL, $onDirLeave = NULL) {
+		if(!$this->isCallableOrNull($onFile)) {
+			throw new \InvalidArgumentException('$onFile must be callable or NULL!');
+		}
+		if(!$this->isCallableOrNull($onDirEnter)) {
+			throw new \InvalidArgumentException('$onDirEnter must be callable or NULL!');
+		}
+		if(!$this->isCallableOrNull($onDirLeave)) {
+			throw new \InvalidArgumentException('$onDirLeave must be callable or NULL!');
+		}
+
+		$this->recursiveDeleteCallbackInternal($onFile, $onDirEnter, $onDirLeave);
+	}
+
+	private function recursiveDeleteCallbackInternal($onFile, $onDirEnter, $onDirLeave) {
+		foreach($this->content as $i => $item) {
+			if($item instanceof File) {
+				if($onFile !== NULL) {
+					if(call_user_func($onFile, $this->content[$i])) {
+						unset($this->content[$i]);
+					}
+				}
+			} else {
+				$dirDeleted = false;
+				if($onDirEnter !== NULL) {
+					$dirDeleted = (bool) call_user_func($onDirEnter, $this->content[$i]);
+				}
+				if($dirDeleted) {
+					unset($this->content[$i]);
+				} else {
+					$item->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
+					if($onDirLeave !== NULL) {
+						if(call_user_func($onDirLeave, $this->content[$i]) === true) {
+							unset($this->content[$i]);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Walk across the current directory.
 	 * Calls $onFile for every file and $onDir for every directory encountered.
@@ -210,24 +286,6 @@ class Directory implements HasParent {
 			} else {
 				if($onDir !== NULL) {
 					call_user_func($onDir, $this->content[$i]);
-				}
-			}
-		}
-	}
-
-	private function recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave) {
-		foreach($this->content as $i => $item) {
-			if($item instanceof File) {
-				if($onFile !== NULL) {
-					call_user_func($onFile, $this->content[$i]);
-				}
-			} else {
-				if($onDirEnter !== NULL) {
-					call_user_func($onDirEnter, $this->content[$i]);
-				}
-				$item->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
-				if($onDirLeave !== NULL) {
-					call_user_func($onDirLeave, $this->content[$i]);
 				}
 			}
 		}

@@ -55,6 +55,9 @@ if(!function_exists('onParsed')) {
 if(!function_exists('onMerged')) {
 	function onMerged(Directory $output) {}
 }
+if(!function_exists('onPruned')) {
+	function onPruned(Directory $output) {}
+}
 if(!function_exists('onRendered')) {
 	function onRendered(Directory $output) {}
 }
@@ -84,10 +87,21 @@ $output->recursiveWalkCallback(function(File $file) use (&$currentMetadata) {
 });
 onMerged($output);
 
-$output->recursiveWalkCallback(function(File $file) {
-	if(!$file->getDoRender()) {
-		return;
+$output->recursiveDeleteOnCondition(function(File $file) {
+	return !$file->getDoRender();
+},
+	NULL,
+
+	function(Directory $leaving) {
+	if($leaving->countContent() === 0) {
+		return true;
+	} else {
+		return false;
 	}
+});
+onPruned($output);
+
+$output->recursiveWalkCallback(function(File $file) {
 	$file->render();
 	$file->applyMode();
 	$file->applyMtime();
