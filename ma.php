@@ -5,6 +5,13 @@
  */
 
 namespace lvps\MechatronicAnvil;
+define('VERSION', '0'); // TODO: version 1.0.0 and git tag when stable enough
+
+function println($text) {
+	echo $text . PHP_EOL;
+}
+
+println('Mechatronic anvil '.VERSION.' started.');
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -69,11 +76,20 @@ $inputTree = new Directory(INPUT);
 $inputTree->buildTree();
 $output = $inputTree->buildOutputTree(new Directory(OUTPUT));
 onRead($output);
+println('Done reading input tree');
 
-$output->recursiveWalkCallback(function(File $file) use ($parsers) {
-	$parsers->tryParse($file);
+$stats = ['parsers' => [], 'renderers' => [], 'filesRead' => 0, 'filesRendered' => 0];
+$output->recursiveWalkCallback(function(File $file) use ($parsers, &$stats) {
+	$theParser = $parsers->tryParse($file);
+	$stats['filesRead']++;
+	if(isset($stats['parsers'][$theParser])) {
+		$stats['parsers'][$theParser]++;
+	} else {
+		$stats['parsers'][$theParser] = 1;
+	}
 });
 onParsed($output);
+println('Done parsing');
 
 $metadataStack = [];
 $currentMetadata = new Metadata();
@@ -89,6 +105,7 @@ $output->recursiveWalkCallback(function(File $file) use (&$currentMetadata) {
 	$currentMetadata->rebuildFromStack($metadataStack);
 });
 onMerged($output);
+println('Done merging metadata');
 
 $output->recursiveDeleteOnCondition(function(File $file) {
 	return !$file->getDoRender();
@@ -103,14 +120,22 @@ $output->recursiveDeleteOnCondition(function(File $file) {
 	}
 });
 onPruned($output);
+println('Done pruning non-renderable files');
 
 // TODO: clean output directory from files/directories that don't exist anymore
 onCleaned($output);
+//println('Done cleaning output directory');
 
-$output->recursiveWalkCallback(function(File $file) {
-	$file->render();
+$output->recursiveWalkCallback(function(File $file) use (&$stats) {
+	$theParser = $file->render();
 	$file->applyMode();
 	$file->applyMtime();
+	$stats['filesRendered']++;
+	if(isset($stats['renderers'][$theParser])) {
+		$stats['renderers'][$theParser]++;
+	} else {
+		$stats['renderers'][$theParser] = 1;
+	}
 }, function(Directory $entering) {
 	$path = $entering->getPath();
 	if(!is_dir($path)) {
@@ -121,5 +146,27 @@ $output->recursiveWalkCallback(function(File $file) {
 	$leaving->applyMtime();
 });
 onRendered($output);
+println('Done rendering');
 
-// TODO: print stats
+println('');
+arsort($stats['parsers']);
+arsort($stats['renderers']);
+$prefix = __NAMESPACE__ . '\\Parsers\\';
+$prefixLen = strlen($prefix);
+println($stats['filesRead'] . ' files read by ' . count($stats['parsers']) . ' parsers:');
+foreach($stats['parsers'] as $parser => $count) {
+	if(substr($parser, 0, $prefixLen) === $prefix) {
+		println('-> ' . substr($parser, $prefixLen) . ': ' . $count);
+	} else {
+		println('-> ' . $parser . ': ' . $count);
+	}
+}
+println('');
+println($stats['filesRendered'] . ' files rendered by ' . count($stats['renderers']) . ' parsers:');
+foreach($stats['renderers'] as $parser => $count) {
+	if(substr('-> ' . $parser, 0, $prefixLen) === $prefix) {
+		println(substr($parser, $prefixLen) . ': ' . $count);
+	} else {
+		println('-> ' . $parser . ': ' . $count);
+	}
+}

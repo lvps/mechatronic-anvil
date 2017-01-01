@@ -25,13 +25,13 @@ class ParserCollection {
 		}
 	}
 
-	public function tryParse(File $file) {
+	public function tryParse(File $file): string {
 		$i = count($this->parsers);
 		while($i--) {
 			if($this->parsers[$i]->canParse($file)) {
 				$file->setParser($this->parsers[$i]);
 				$this->parsers[$i]->parse($file);
-				return;
+				return get_class($this->parsers[$i]);
 			}
 		}
 

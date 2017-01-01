@@ -144,9 +144,10 @@ class File implements HasParent {
 		$this->doRender = false;
 	}
 
-	public function render() {
+	public function render(): string {
 		$this->makesSenseToRender();
 		$this->parser->renderToFile($this);
+		return get_class($this->parser);
 	}
 
 	private function makesSenseToRender() {
