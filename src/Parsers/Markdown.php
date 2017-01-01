@@ -31,7 +31,7 @@ class Markdown implements Parser {
 
 	public function renderToString(File $file): string {
 		$content = MarkdownExtra::defaultTransform($file->getRenderFrom()->getContents());
-		return $this->render($this->getTemplate($file->getMetadata()), $file, $content);
+		return $this->renderWithStandardProcedure($file, $content);
 	}
 
 	public function renderToFile(File $file) {

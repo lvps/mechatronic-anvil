@@ -33,6 +33,9 @@ if(!defined('TEMPLATES')) {
 if(!is_dir(TEMPLATES)) {
 	throw new \Exception('Templates directory ('.TEMPLATES.') is not a directory!');
 }
+if(!defined('REBASE')) {
+	define('REBASE', '');
+}
 if(!isset($parsers)) {
 	$parsers = ['UnderscoreDotYaml', 'YamlForMarkdown', 'MarkdownWithYAMLFrontMatter', 'Markdown'];
 }

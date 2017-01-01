@@ -51,7 +51,7 @@ abstract class AbstractYAMLFrontMatter implements Parser {
 	public function renderToString(File $file): string {
 		$pieces = $this->split($file->getRenderFrom());
 		$content = $this->renderInputString($pieces[1]);
-		return $this->render($this->getTemplate($file->getMetadata()), $file, $content);
+		return $this->renderWithStandardProcedure($file, $content);
 	}
 
 	public function renderToFile(File $file) {

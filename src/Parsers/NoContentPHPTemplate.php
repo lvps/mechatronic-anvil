@@ -27,7 +27,7 @@ class NoContentPHPTemplate implements Parser {
 	}
 
 	public function renderToString(File $file): string {
-		return $this->render($this->getTemplate($file->getMetadata()), $file, '');
+		return $this->renderWithStandardProcedure($file, '');
 	}
 
 	public function renderToFile(File $file) {

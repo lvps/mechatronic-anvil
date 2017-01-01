@@ -29,7 +29,7 @@ class HTMLWithDefaultTemplate implements Parser {
 	}
 
 	public function renderToString(File $file): string {
-		return $this->render($this->getTemplate($file->getMetadata()), $file, $file->getRenderFrom()->getContents());
+		return $this->renderWithStandardProcedure($file, $file->getRenderFrom()->getContents());
 	}
 
 	public function renderToFile(File $file) {
