@@ -249,7 +249,7 @@ class Directory implements HasParent {
 				if($dirDeleted) {
 					unset($this->content[$i]);
 				} else {
-					$item->recursiveWalkCallbackInternal($onFile, $onDirEnter, $onDirLeave);
+					$item->recursiveDeleteCallbackInternal($onFile, $onDirEnter, $onDirLeave);
 					if($onDirLeave !== NULL) {
 						if(call_user_func($onDirLeave, $this->content[$i]) === true) {
 							unset($this->content[$i]);
