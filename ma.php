@@ -149,24 +149,34 @@ onRendered($output);
 println('Done rendering');
 
 println('');
+function arrayUnprefix($arr) {
+	$prefix = __NAMESPACE__ . '\\Parsers\\';
+	$prefixLen = strlen($prefix);
+	$rebuilt = [];
+	foreach($arr as $parser => $count) {
+		if(substr($parser, 0, $prefixLen) === $prefix) {
+			$rebuilt[substr($parser, $prefixLen)] = $count;
+		} else {
+			$rebuilt[$parser] = $count;
+		}
+	}
+	return $rebuilt;
+}
+$stats['parsers'] = arrayUnprefix($stats['parsers']);
+$stats['renderers'] = arrayUnprefix($stats['renderers']);
+// Result is sorted by value (number of files parsed) descending, then key (parser name) ascending.
+// This has to be done in "reverse" (ksort before arsort).
+ksort($stats['parsers']);
 arsort($stats['parsers']);
+ksort($stats['renderers']);
 arsort($stats['renderers']);
-$prefix = __NAMESPACE__ . '\\Parsers\\';
-$prefixLen = strlen($prefix);
+
 println($stats['filesRead'] . ' files read by ' . count($stats['parsers']) . ' parsers:');
 foreach($stats['parsers'] as $parser => $count) {
-	if(substr($parser, 0, $prefixLen) === $prefix) {
-		println('-> ' . substr($parser, $prefixLen) . ': ' . $count);
-	} else {
 		println('-> ' . $parser . ': ' . $count);
-	}
 }
 println('');
 println($stats['filesRendered'] . ' files rendered by ' . count($stats['renderers']) . ' parsers:');
 foreach($stats['renderers'] as $parser => $count) {
-	if(substr('-> ' . $parser, 0, $prefixLen) === $prefix) {
-		println(substr($parser, $prefixLen) . ': ' . $count);
-	} else {
-		println('-> ' . $parser . ': ' . $count);
-	}
+	println('-> ' . $parser . ': ' . $count);
 }
