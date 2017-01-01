@@ -18,8 +18,32 @@ trait Stat {
 			throw new \Exception('Trying to stat non-existing file: '.$filename);
 		}
 
-		$this->mode = fileperms($filename);
-		$this->mtime = filemtime($filename);
+		$this->mode = $this->readpermsFromDisk($filename);
+		$this->mtime = $this->readMtimeFromDisk($filename);
+	}
+
+	private function readMtimeFromDisk(string $filename): int {
+		$result = false;
+		if(file_exists($filename)) {
+			$result = filemtime($filename);
+		}
+		if(is_int($result)) {
+			return $result;
+		} else {
+			throw new \RuntimeException('Cannot read mtime from ' . $filename);
+		}
+	}
+
+	private function readPermsFromDisk(string $filename): int {
+		$result = false;
+		if(file_exists($filename)) {
+			$result = fileperms($filename);
+		}
+		if(is_int($result)) {
+			return $result;
+		} else {
+			throw new \RuntimeException('Cannot read permissions from ' . $filename);
+		}
 	}
 
 	/**

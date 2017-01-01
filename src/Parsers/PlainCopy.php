@@ -22,8 +22,15 @@ class PlainCopy implements Parser {
 
 	public function renderToFile(File $file) {
 		$output = $file->getFilename();
-		copy($file->getRenderFrom()->getFilename(), $output);
-		$file->applyMtime();
+		try {
+			$comparison = $file->statMtimeCompare();
+		} catch(\RuntimeException $ignored) {
+			$comparison = 1;
+		}
+		if($comparison > 0) {
+			copy($file->getRenderFrom()->getFilename(), $output);
+			$file->applyMtime();
+		}
 		$file->applyMode();
 	}
 

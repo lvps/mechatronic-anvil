@@ -51,8 +51,21 @@ class File implements HasParent {
 	//}
 
 	public function stat() {
-		$filename = $this->getFilename();
-		$this->doStat($filename);
+		$this->doStat($this->getFilename());
+	}
+
+	/**
+	 * Compare mtime between this File object and the actual file on disk.
+	 *
+	 * @throws \RuntimeException if mtime is missing or cannot be read from disk (e.g. file doesn't exist)
+	 * @return int $this->mtime - $currentMtime, &gt;0 if this is newer, &lt;0 if this is older, =0 if identical
+	 */
+	public function statMtimeCompare(): int {
+		$currentMtime = $this->readMtimeFromDisk($this->getFilename());
+		if($this->mtime === NULL) {
+			throw new \RuntimeException('No mtime set for ' . $this->getFilename());
+		}
+		return $this->mtime - $currentMtime;
 	}
 
 	public function getContents(): string {

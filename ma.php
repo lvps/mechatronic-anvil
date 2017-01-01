@@ -58,6 +58,9 @@ if(!function_exists('onMerged')) {
 if(!function_exists('onPruned')) {
 	function onPruned(Directory $output) {}
 }
+if(!function_exists('onCleaned')) {
+	function onCleaned(Directory $output) {}
+}
 if(!function_exists('onRendered')) {
 	function onRendered(Directory $output) {}
 }
@@ -101,6 +104,9 @@ $output->recursiveDeleteOnCondition(function(File $file) {
 });
 onPruned($output);
 
+// TODO: clean output directory from files/directories that don't exist anymore
+onCleaned($output);
+
 $output->recursiveWalkCallback(function(File $file) {
 	$file->render();
 	$file->applyMode();
@@ -115,3 +121,5 @@ $output->recursiveWalkCallback(function(File $file) {
 	$leaving->applyMtime();
 });
 onRendered($output);
+
+// TODO: print stats
