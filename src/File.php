@@ -44,6 +44,21 @@ class File implements HasParent {
 		if($name === NULL || $name === '') {
 			throw new \InvalidArgumentException('File names cannot be empty!');
 		}
+
+		if($this->parent !== NULL) {
+			$nameLowercase = strtolower($name);
+			$duplicate = false;
+			$thisFile = $this;
+
+			$this->parent->walkCallback(function(File $file) use (&$duplicate, $thisFile, $nameLowercase) {
+				if($thisFile !== $file && strtolower($file->getBasename()) === $nameLowercase) {
+					$duplicate = true;
+				}
+			});
+			if($duplicate) {
+				throw new \InvalidArgumentException('Duplicate file name: ' . $name . '!');
+			}
+		}
 	}
 
 	//public function __clone() {
