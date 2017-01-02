@@ -8,7 +8,6 @@ namespace lvps\MechatronicAnvil\Parsers;
 
 
 use lvps\MechatronicAnvil\File;
-use lvps\MechatronicAnvil\Parser;
 use Michelf\MarkdownExtra;
 
 /**
@@ -17,8 +16,8 @@ use Michelf\MarkdownExtra;
  *
  * @package lvps\MechatronicAnvil\Parsers
  */
-class MarkdownWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Parser {
-	use YamlParserWrapper, PHPTemplate;
+class MarkdownWithYAMLFrontMatter extends AbstractYAMLFrontMatter {
+	use YamlParserWrapper;
 
 	public function canParse(File $what): bool {
 		if(strtolower($what->getExtension()) === 'md') {
@@ -30,7 +29,7 @@ class MarkdownWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Par
 		return false;
 	}
 
-	public function renderInputString(string $what): string {
+	public function renderContentToString(string $what): string {
 		return MarkdownExtra::defaultTransform($what);
 	}
 }

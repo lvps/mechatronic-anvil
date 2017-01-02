@@ -14,8 +14,7 @@ use Michelf\MarkdownExtra;
  *
  * @package lvps\MechatronicAnvil\Parsers
  */
-class Markdown implements Parser {
-	use PHPTemplate;
+class Markdown extends PHPTemplate implements Parser {
 
 	public function canParse(File $what): bool {
 		if(strtolower($what->getExtension()) === 'md') {
@@ -29,14 +28,7 @@ class Markdown implements Parser {
 		return;
 	}
 
-	public function renderToString(File $file): string {
-		$content = MarkdownExtra::defaultTransform($file->getRenderFrom()->getContents());
-		return $this->renderWithStandardProcedure($file, $content);
-	}
-
-	public function renderToFile(File $file) {
-		file_put_contents($file->getFilename(), $this->renderToString($file));
-		$file->applyMtime();
-		$file->applyMode();
+	public function getContent(File $file): string {
+		return MarkdownExtra::defaultTransform($file->getRenderFrom()->getContents());
 	}
 }

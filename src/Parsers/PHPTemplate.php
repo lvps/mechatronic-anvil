@@ -9,9 +9,23 @@ namespace lvps\MechatronicAnvil\Parsers;
 
 use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Metadata;
+use lvps\MechatronicAnvil\Parser;
 use lvps\MechatronicAnvil\Rebase;
 
-trait PHPTemplate {
+abstract class PHPTemplate implements Parser {
+
+	abstract protected function getContent(File $file): string;
+
+	public function renderToString(File $file) {
+		return $this->renderWithStandardProcedure($file, $this->getContent($file));
+	}
+
+	public function renderToFile(File $file) {
+		file_put_contents($file->getFilename(), $this->renderToString($file));
+		$file->applyMtime();
+		$file->applyMode();
+	}
+
 	/**
 	 * Get template name from metadata (or use base.php), render file, rebase URLs.
 	 *

@@ -10,8 +10,8 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
 
-abstract class AbstractYAMLFrontMatter implements Parser {
-	use YamlParserWrapper, PHPTemplate;
+abstract class AbstractYAMLFrontMatter extends PHPTemplate implements Parser {
+	use YamlParserWrapper;
 
 	public function parse(File $file) {
 		$pieces = $this->split($file->getRenderFrom());
@@ -48,18 +48,11 @@ abstract class AbstractYAMLFrontMatter implements Parser {
 		return NULL;
 	}
 
-	public function renderToString(File $file): string {
+	protected function getContent(File $file): string {
 		$pieces = $this->split($file->getRenderFrom());
-		$content = $this->renderInputString($pieces[1]);
-		return $this->renderWithStandardProcedure($file, $content);
+		return $this->renderContentToString($pieces[1]);
 	}
 
-	public function renderToFile(File $file) {
-		file_put_contents($file->getFilename(), $this->renderToString($file));
-		$file->applyMtime();
-		$file->applyMode();
-	}
-
-	abstract function renderInputString(string $what): string;
+	abstract protected function renderContentToString(string $what): string;
 
 }

@@ -9,14 +9,13 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 
 /**
- * Never matches anything, doesn't parse anything, renders files with PHPTemplate trait.
+ * Never matches anything, doesn't parse anything, renders files with PHPTemplate class.
  * Content is always an empty string.
  * Useful for pages generated in onRead/onParsed/onMerged.
  *
  * @package lvps\MechatronicAnvil\Parsers
  */
-class NoContentPHPTemplate implements Parser {
-	use PHPTemplate;
+class NoContentPHPTemplate extends PHPTemplate implements Parser {
 
 	public function canParse(File $what): bool {
 		return false;
@@ -26,13 +25,7 @@ class NoContentPHPTemplate implements Parser {
 		return;
 	}
 
-	public function renderToString(File $file): string {
-		return $this->renderWithStandardProcedure($file, '');
-	}
-
-	public function renderToFile(File $file) {
-		file_put_contents($file->getFilename(), $this->renderToString($file));
-		$file->applyMtime();
-		$file->applyMode();
+	protected function getContent(File $file): string {
+		return '';
 	}
 }

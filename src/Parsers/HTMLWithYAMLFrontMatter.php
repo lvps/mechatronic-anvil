@@ -11,12 +11,12 @@ use lvps\MechatronicAnvil\File;
 use lvps\MechatronicAnvil\Parser;
 
 /**
- * HTML content with YAML front matter (for metadata). Fed into the PHPTemplate trait.
+ * HTML content with YAML front matter (for metadata). Fed into the PHPTemplate class.
  *
  * @package lvps\MechatronicAnvil\Parsers
  */
 class HTMLWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Parser {
-	use YamlParserWrapper, PHPTemplate;
+	use YamlParserWrapper;
 
 	public function canParse(File $what): bool {
 		if(strtolower($what->getExtension()) === 'html') {
@@ -28,7 +28,7 @@ class HTMLWithYAMLFrontMatter extends AbstractYAMLFrontMatter implements Parser 
 		return false;
 	}
 
-	public function renderInputString(string $what): string {
+	public function renderContentToString(string $what): string {
 		return $what;
 	}
 }
