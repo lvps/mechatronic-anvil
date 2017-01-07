@@ -60,6 +60,21 @@ trait Stat {
 		return $this->mode;
 	}
 
+	/**
+	 * Update mtime if supplied argument is more recent.
+	 *
+	 * @param int $newMtime
+	 */
+	public function upDate(int $newMtime) {
+		if(!is_int($this->getMtime())) {
+			throw new \LogicException('Trying to update mtime on a file without mtime!?');
+		}
+
+		if($newMtime > $this->getMtime()) {
+			$this->mtime = $newMtime;
+		}
+	}
+
 	private function getTargetFilename() {
 		if($this instanceof File) {
 			return $this->getFilename();
