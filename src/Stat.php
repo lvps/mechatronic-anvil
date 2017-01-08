@@ -54,6 +54,16 @@ trait Stat {
 	}
 
 	/**
+	 * Set mtime. upDate() is probably more useful.
+	 *
+	 * @see upDate()
+	 * @param int $mtime
+	 */
+	public function setMtime(int $mtime) {
+		$this->mtime = $mtime;
+	}
+
+	/**
 	 * @return int|NULL
 	 */
 	public function getMode() {
@@ -63,6 +73,7 @@ trait Stat {
 	/**
 	 * Update mtime if supplied argument is more recent.
 	 *
+	 * @see setMtime()
 	 * @param int $newMtime
 	 */
 	public function upDate(int $newMtime) {
@@ -71,7 +82,7 @@ trait Stat {
 		}
 
 		if($newMtime > $this->getMtime()) {
-			$this->mtime = $newMtime;
+			$this->setMtime($newMtime);
 		}
 	}
 
