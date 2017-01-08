@@ -51,6 +51,7 @@ abstract class PHPTemplate implements Parser {
 		$file_path = $file->getRelativeFilename();
 		ob_start();
 		include $templatePath;
+		$file->upDate(filemtime($templatePath));
 		return ob_get_clean();
 	}
 
