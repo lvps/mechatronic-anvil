@@ -312,4 +312,28 @@ class Directory implements HasParent {
 		}
 		return $root;
 	}
+
+	public static function BuildTreeAsArray(string $directory) {
+		// TODO: implement Queue or use a library
+		$queue = new Queue();
+		$queue->enqueue($directory);
+		$result[$directory] = true;
+
+		// Look, a breadth-first search!
+		while(!$queue->empty()) {
+			$directory = $queue->dequeue();
+			foreach(scandir($directory) as $entry) {
+				if($entry === '.' || $entry === '..') {
+					continue;
+				}
+
+				$filename = $directory . DIRECTORY_SEPARATOR . $entry;
+				$result[$filename] = true;
+
+				if(is_dir($filename)) {
+					$queue->enqueue($filename);
+				}
+			}
+		}
+	}
 }

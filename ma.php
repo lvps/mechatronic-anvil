@@ -126,6 +126,7 @@ onPruned($output);
 println('Done pruning non-renderable files');
 
 // TODO: clean output directory from files/directories that don't exist anymore
+// TODO: call Directory::BuildTreeAsArray
 onCleaned($output);
 //println('Done cleaning output directory');
 
