@@ -314,15 +314,40 @@ class Directory implements HasParent {
 	}
 
 	public function deleteDeletedFiles() {
-		$outputTree = Directory::BuildTreeAsArray($this->getPath());
-		$callback = function($fileOrDirectory) use ($outputTree) {
+		$outputDirectory = $this->getPath();
+		$outputTree = Directory::BuildTreeAsArray($outputDirectory);
+		$callback = function($fileOrDirectory) use (&$outputTree) {
 				if($fileOrDirectory instanceof File) {
 					$outputTree[$fileOrDirectory->getRelativeFilename()] = true;
 				}
 		};
 
 		$this->recursiveWalkCallback($callback, NULL, $callback);
+		foreach($outputTree as $relativeFile => $rendered) {
+			if(!$rendered) {
+				$deleteThis = $outputDirectory . DIRECTORY_SEPARATOR . $relativeFile;
+				if(is_dir($deleteThis)) {
+					self::rmdirRecursive($deleteThis);
+				} else if(is_file($deleteThis)) {
+					// might have been already removed by rmdirRecursive
+					unlink($deleteThis);
+				}
+			}
+		}
+	}
 
+	private static function rmdirRecursive($directory) {
+		$files = array_diff(scandir($directory), ['.', '..']);
+
+		foreach($files as $file) {
+			if(is_dir($directory . DIRECTORY_SEPARATOR . $file)) {
+				self::rmdirRecursive($directory . DIRECTORY_SEPARATOR . $file);
+			} else {
+				unlink($directory . DIRECTORY_SEPARATOR . $file);
+			}
+		}
+
+		return rmdir($directory);
 	}
 
 	private static function BuildTreeAsArray(string $directory) {
