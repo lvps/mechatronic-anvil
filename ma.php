@@ -125,11 +125,9 @@ $output->recursiveDeleteOnCondition(function(File $file) {
 onPruned($output);
 println('Done pruning non-renderable files');
 
-// TODO: clean output directory from files/directories that don't exist anymore
-// TODO: move this function to a wrapper that also deletes stuff (and uses recursion on $output)
-$outputTree = Directory::BuildTreeAsArray(OUTPUT);
+$output->deleteDeletedFiles();
 onCleaned($output);
-//println('Done cleaning output directory');
+println('Done cleaning output directory');
 
 $output->recursiveWalkCallback(function(File $file) use (&$stats) {
 	$theParser = $file->render();

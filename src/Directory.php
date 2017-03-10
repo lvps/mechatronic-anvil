@@ -313,10 +313,23 @@ class Directory implements HasParent {
 		return $root;
 	}
 
-	public static function BuildTreeAsArray(string $directory) {
+	public function deleteDeletedFiles() {
+		$outputTree = Directory::BuildTreeAsArray($this->getPath());
+		$callback = function($fileOrDirectory) use ($outputTree) {
+				if($fileOrDirectory instanceof File) {
+					$outputTree[$fileOrDirectory->getRelativeFilename()] = true;
+				}
+		};
+
+		$this->recursiveWalkCallback($callback, NULL, $callback);
+
+	}
+
+	private static function BuildTreeAsArray(string $directory) {
+		$result = [];
 		$queue = [];
 		$queue[] = $directory;
-		$result[$directory] = false;
+		$len = strlen($directory) + strlen(DIRECTORY_SEPARATOR);
 
 		// Look, a breadth-first search!
 		while(count($queue) > 0) {
@@ -327,12 +340,14 @@ class Directory implements HasParent {
 				}
 
 				$filename = $directory . DIRECTORY_SEPARATOR . $entry;
-				$result[$filename] = false;
+				$result[substr($filename, $len)] = false;
 
 				if(is_dir($filename)) {
 					$queue[] = $filename;
 				}
 			}
 		}
+
+		return $result;
 	}
 }
