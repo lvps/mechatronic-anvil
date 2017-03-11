@@ -165,6 +165,10 @@ class File implements HasParent {
 		return get_class($this->parser);
 	}
 
+	/**
+	 * @deprecated
+	 * @todo is this really needed?
+	 */
 	private function makesSenseToRender() {
 		if(!$this->getDoRender()) {
 			throw new \LogicException($this.' isn\'t a renderizable file!');

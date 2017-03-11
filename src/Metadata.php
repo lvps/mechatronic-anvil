@@ -48,6 +48,8 @@ class Metadata implements \ArrayAccess {
 
 	/**
 	 * @param boolean $inheritable
+	 * @deprecated Is this needed anymore?
+	 * @todo remove if unneeded
 	 */
 	public function setInheritable(bool $inheritable) {
 		$this->inheritable = $inheritable;
