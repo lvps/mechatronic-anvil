@@ -17,6 +17,7 @@ class CSSMinify implements Parser {
 	private static $remove = ["\r\n", "\r", "\n", "\t", '      ', '     ', '    ', '   ', '  '];
 
 	public function canParse(File $what): bool {
+		// TODO: use getRenderFrom()! Also check chat every other Parser does the same!
 		if(strtolower($what->getExtension()) === 'css') {
 			return true;
 		}

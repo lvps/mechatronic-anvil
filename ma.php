@@ -44,6 +44,7 @@ if(is_array($parsers)) {
 	$parsers_new = new ParserCollection();
 	while($i--) {
 		// There are no words to describe this.
+		// TODO: something to allow users to add their own parsers without sending a pull request?
 		$parserName = __NAMESPACE__ . '\\Parsers\\' . $parsers[$i];
 		if(!class_exists($parserName)) {
 			throw new \Exception($parserName . ' does not exist!');
