@@ -97,16 +97,15 @@ println('Done parsing');
 
 $metadataStack = [];
 $currentMetadata = new Metadata();
-$currentMetadata->setInheritable(true);
 $output->recursiveWalkCallback(function(File $file) use (&$currentMetadata) {
 	// we're doing everything "in reverse", but basically: global is overwritten by local.
 	$file->addMetadataOnBottom($currentMetadata);
 }, function(Directory $entering) use (&$metadataStack, &$currentMetadata) {
 	$metadataStack[] = $entering->getMetadata();
-	$currentMetadata->rebuildFromStack($metadataStack);
+	$currentMetadata = Metadata::buildFromStack($metadataStack);
 }, function(Directory $leaving) use (&$metadataStack, &$currentMetadata, $output) {
 	array_pop($metadataStack);
-	$currentMetadata->rebuildFromStack($metadataStack);
+	$currentMetadata = Metadata::buildFromStack($metadataStack);
 });
 onMerged($output);
 println('Done merging metadata');

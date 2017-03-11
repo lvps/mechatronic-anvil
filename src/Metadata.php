@@ -10,20 +10,16 @@ namespace lvps\MechatronicAnvil;
 class Metadata implements \ArrayAccess {
 	/** @var array */
 	private $metadata = [];
-	/** @var bool */
-	private $inheritable = false;
 
 	/**
 	 * Metadata constructor.
 	 *
 	 * @param array|NULL $metadata
-	 * @param bool $inheritable if this metadata applies to subdirectories too (makes sense only on a directory), default false
 	 */
-	public function __construct(array $metadata = NULL, bool $inheritable = false) {
+	public function __construct(array $metadata = NULL) {
 		if(is_array($metadata)) {
 			$this->metadata = $metadata;
 		}
-		$this->inheritable = (bool) $inheritable;
 	}
 
 	public function offsetExists($offset): bool {
@@ -44,22 +40,6 @@ class Metadata implements \ArrayAccess {
 
 	public function offsetUnset($offset) {
 		unset($this->metadata[$offset]);
-	}
-
-	/**
-	 * @param boolean $inheritable
-	 * @deprecated Is this needed anymore?
-	 * @todo remove if unneeded
-	 */
-	public function setInheritable(bool $inheritable) {
-		$this->inheritable = $inheritable;
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public function isInheritable(): bool {
-		return $this->inheritable;
 	}
 
 	/**
@@ -88,19 +68,19 @@ class Metadata implements \ArrayAccess {
 	 * Very ad hoc method. Does THINGS.
 	 *
 	 * @param array $metadataStack array of Metadata or NULL.
+	 * @return Metadata
 	 */
-	public function rebuildFromStack(array $metadataStack) {
-		$this->metadata = [];
+	public static function buildFromStack(array $metadataStack): Metadata {
+		$result = new Metadata();
 		if(($count = count($metadataStack)) > 0) {
 			for($i = 0; $i < $count; $i++) {
 				if($metadataStack[$i] !== NULL && $metadataStack[$i] instanceof Metadata) {
-					// merge all inheritable + last (current directory) regardless
-					if($metadataStack[$i]->isInheritable() || $i === ($count-1)) {
-						$this->mergeUnder($metadataStack[$i]);
-					}
+					$result->mergeUnder($metadataStack[$i]);
 				}
 			}
 		}
+
+		return $result;
 	}
 }
 
