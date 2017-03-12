@@ -160,21 +160,10 @@ class File implements HasParent {
 	}
 
 	public function render(): string {
-		$this->makesSenseToRender();
-		$this->parser->renderToFile($this);
-		return get_class($this->parser);
-	}
-
-	/**
-	 * @deprecated
-	 * @todo is this really needed?
-	 */
-	private function makesSenseToRender() {
-		if(!$this->getDoRender()) {
-			throw new \LogicException($this.' isn\'t a renderizable file!');
-		}
 		if(!($this->parser instanceof Parser)) {
 			throw new \LogicException('No valid parser set for '.$this.'!');
 		}
+		$this->parser->renderToFile($this);
+		return get_class($this->parser);
 	}
 }
