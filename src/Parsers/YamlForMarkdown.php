@@ -22,7 +22,7 @@ class YamlForMarkdown implements Parser{
 	use YamlParserWrapper;
 
 	public function canParse(File $what): bool {
-		if(strtolower($what->getExtension()) === 'yaml') {
+		if(strtolower($what->getRenderFrom()->getExtension()) === 'yaml') {
 			return true;
 		}
 		return false;

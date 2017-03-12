@@ -17,7 +17,7 @@ use lvps\MechatronicAnvil\Parser;
 class HTMLWithDefaultTemplate extends PHPTemplate implements Parser {
 
 	public function canParse(File $what): bool {
-		if(strtolower($what->getExtension()) === 'html') {
+		if(strtolower($what->getRenderFrom()->getExtension()) === 'html') {
 			return true;
 		}
 		return false;

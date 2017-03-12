@@ -20,7 +20,7 @@ class MarkdownWithYAMLFrontMatter extends AbstractYAMLFrontMatter {
 	use YamlParserWrapper;
 
 	public function canParse(File $what): bool {
-		if(strtolower($what->getExtension()) === 'md') {
+		if(strtolower($what->getRenderFrom()->getExtension()) === 'md') {
 			$content = $what->getRenderFrom()->getContents();
 			if($this->separatorType($this->removeStartingSeparator($content)) !== NULL) {
 				return true;

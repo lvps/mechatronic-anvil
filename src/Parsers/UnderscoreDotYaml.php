@@ -18,7 +18,7 @@ class UnderscoreDotYaml implements Parser {
     use YamlParserWrapper;
 
 	public function canParse(File $what): bool {
-		if(strtolower($what->getBasename()) === '_.yaml') {
+		if(strtolower($what->getRenderFrom()->getBasename()) === '_.yaml') {
 			return true;
 		}
 		return false;

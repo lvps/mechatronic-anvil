@@ -17,7 +17,7 @@ use Michelf\MarkdownExtra;
 class Markdown extends PHPTemplate implements Parser {
 
 	public function canParse(File $what): bool {
-		if(strtolower($what->getExtension()) === 'md') {
+		if(strtolower($what->getRenderFrom()->getExtension()) === 'md') {
 			return true;
 		}
 		return false;
