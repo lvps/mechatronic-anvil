@@ -7,9 +7,7 @@
 namespace lvps\MechatronicAnvil;
 
 
-class File implements HasParent {
-	use Stat, HasMetadata;
-
+class File extends FilesystemObject implements HasParent {
 	/** @var string|NULL */
 	private $name;
 	/** @var File|NULL */
@@ -65,34 +63,16 @@ class File implements HasParent {
 		// don't clone renderFrom, it points to a File in another Directory tree and should stay that way.
 	//}
 
-	public function stat() {
-		$this->doStat($this->getFilename());
-	}
-
-	/**
-	 * Compare mtime between this File object and the actual file on disk.
-	 *
-	 * @throws \RuntimeException if mtime is missing or cannot be read from disk (e.g. file doesn't exist)
-	 * @return int $this->mtime - $currentMtime, &gt;0 if this is newer, &lt;0 if this is older, =0 if identical
-	 */
-	public function statMtimeCompare(): int {
-		$currentMtime = $this->readMtimeFromDisk($this->getFilename());
-		if($this->mtime === NULL) {
-			throw new \RuntimeException('No mtime set for ' . $this->getFilename());
-		}
-		return $this->mtime - $currentMtime;
-	}
-
 	public function getContents(): string {
 		return file_get_contents($this->getFilename());
 	}
 
 	public function getFilename(): string {
-		return $this->parent->getPath() . DIRECTORY_SEPARATOR . $this->name;
+		return $this->parent->getFilename() . DIRECTORY_SEPARATOR . $this->name;
 	}
 
 	public function getRelativeFilename(): string {
-		return $this->parent->getRelativePath() . $this->name;
+		return $this->parent->getRelativeFilename() . $this->name;
 	}
 
 	public function setBasename(string $basename) {

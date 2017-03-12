@@ -7,8 +7,7 @@
 namespace lvps\MechatronicAnvil;
 
 
-class Directory implements HasParent {
-	use Stat, HasMetadata;
+class Directory extends FilesystemObject implements HasParent {
 
 	/** @var string */
 	private $name;
@@ -50,18 +49,18 @@ class Directory implements HasParent {
 		$this->name = $name;
 	}
 
-	public function getPath(): string {
+	public function getFilename(): string {
 		// TODO: apply memoization to get rid of a few function calls?
 		if($this->parent instanceof Directory) {
-			return $this->parent->getPath() . DIRECTORY_SEPARATOR . $this->name;
+			return $this->parent->getFilename() . DIRECTORY_SEPARATOR . $this->name;
 		} else {
 			return $this->name;
 		}
 	}
 
-	public function getRelativePath(): string {
+	public function getRelativeFilename(): string {
 		if($this->parent instanceof Directory) {
-			return $this->parent->getRelativePath() . $this->name . DIRECTORY_SEPARATOR;
+			return $this->parent->getRelativeFilename() . $this->name . DIRECTORY_SEPARATOR;
 		} else {
 			return '';
 		}
@@ -72,7 +71,7 @@ class Directory implements HasParent {
 	}
 
 	public function buildTree() {
-		$currentPath = $this->getPath();
+		$currentPath = $this->getFilename();
 
 		foreach(scandir($currentPath) as $entry) {
 			if($entry === '.' || $entry === '..') {
@@ -100,10 +99,6 @@ class Directory implements HasParent {
 
 	public function getParent(): Directory {
 		return $this->parent;
-	}
-
-	private function stat() {
-		$this->doStat($this->getPath());
 	}
 
 	public function descendInto(string $directory): Directory {
@@ -153,7 +148,7 @@ class Directory implements HasParent {
 		return $copy->reRoot($newRoot);
 	}
 
-	private function isCallableOrNull($what): bool {
+	private static function isCallableOrNull($what): bool {
 		if(is_callable($what) || is_null($what)) {
 			return true;
 		} else {
@@ -314,7 +309,7 @@ class Directory implements HasParent {
 	}
 
 	public function deleteDeletedFiles() {
-		$outputDirectory = $this->getPath();
+		$outputDirectory = $this->getFilename();
 		$outputTree = Directory::BuildTreeAsArray($outputDirectory);
 		$callback = function($fileOrDirectory) use (&$outputTree) {
 				if($fileOrDirectory instanceof File) {

@@ -140,7 +140,7 @@ $output->recursiveWalkCallback(function(File $file) use (&$stats) {
 		$stats['renderers'][$theParser] = 1;
 	}
 }, function(Directory $entering) {
-	$path = $entering->getPath();
+	$path = $entering->getFilename();
 	if(!is_dir($path)) {
 		mkdir($path);
 	}
