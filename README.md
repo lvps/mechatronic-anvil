@@ -78,13 +78,45 @@ User-defined callback function `onRendered($output)` is then called.
  
 Finally, some stats are displayed.
 
-### What does each parser do
-
-(WIP)
-
 ## How to...
 
 ### Write a template
+
+Templates are PHP files that print the rendered page. That's it.
+ 
+Output buffering is used to recover the page and save it to the output file.
+ 
+All the "parsers" that use this kind of templates extend the PHPTemplate base class.
+
+The rendering method in `PHPTemplates`, first of all, looks for the `template` element in file metadata. If found, it calls that file from the templates directory (which is defined via the `TEMPLATES` constant). If it ins't found, it calls the `base.php` in templates directory.  
+E.g. If `TEMPLATES = "templates"` and `$metadata\['template'\] = foo.php`, then `templates/foo.php` is called. If there's no `$metadata\['template'\]`, then `templates/base.php` is called.
+
+And "calls" means "literally `include` that file".
+
+The `include`d template will find some variables available in its scope:
+* `$content`, which is the page content coming from a parser: usually HTML, the content of the `<body></body>` tags
+* `$metadata`, an array of metadata
+* `$file`, the full File object that's being rendered
+* `$file_name`, file basename (e.g. `index.html`)
+* `$file_path`, file path (e.g. `output/foo/index.html`)
+
+A basic template could be:
+```
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+        	<?php echo isset($metadata['title']) ? $metadata['title'] : 'No title';	?>
+        </title>
+    </head>
+    <body>
+        <?= $content ?>
+    </body>
+</html>
+```
+Note that `$metadata['title']` isn't a default variable, it should be defined somewhere in the input files (e.g. by using parsers that accept YAML front matter).
+
+### What does each parser do
 
 (WIP)
 
