@@ -7,7 +7,6 @@
 namespace lvps\MechatronicAnvil\Parsers;
 
 use lvps\MechatronicAnvil\File;
-use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
 
 abstract class AbstractYAMLFrontMatter extends PHPTemplate implements Parser {
@@ -16,7 +15,7 @@ abstract class AbstractYAMLFrontMatter extends PHPTemplate implements Parser {
 	public function parse(File $file) {
 		$pieces = $this->split($file->getRenderFrom());
 		$file->setBasename($file->getBasenameWithoutExtension() . '.html');
-		$file->addMetadataOnTop(new Metadata($this->yamlParse($pieces[0])));
+		$file->addMetadataOnTop($this->yamlParse($pieces[0]));
 	}
 
 	protected static function removeStartingSeparator(string $content): string {

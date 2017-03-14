@@ -8,7 +8,6 @@ namespace lvps\MechatronicAnvil\Parsers;
 
 
 use lvps\MechatronicAnvil\File;
-use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
 use lvps\MechatronicAnvil\Rebase;
 
@@ -59,10 +58,10 @@ abstract class PHPTemplate implements Parser {
 	 * Searches for a template in metadata. If none is found, base.php will be used.
 	 * Returns path to template, based on the TEMPLATES constant.
 	 *
-	 * @param Metadata $md hopefully containing a "template" item
+	 * @param array $md metadata hopefully containing a "template" item
 	 * @return string template path
 	 */
-	private function getTemplate(Metadata $md): string {
+	private function getTemplate(array $md): string {
 		if(!defined('TEMPLATES')) {
 			throw new \LogicException('TEMPLATES constant not defined!');
 		}

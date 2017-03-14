@@ -12,58 +12,37 @@ abstract class FilesystemObject {
 	private $mtime = NULL;
 	/** @var int */
 	private $mode = NULL;
-	/** @var Metadata|NULL */
+	/** @var array|NULL */
 	private $metadata = NULL;
 
 	/**
-	 * @param Metadata|NULL $other
+	 * @param array|NULL $other
 	 */
 	public function addMetadataOnTop($other) {
-		if($other === NULL) {
+		if($other === NULL || !is_array($other) || empty($other)) {
 			return;
 		}
 
-		if(!($other instanceof Metadata)) {
-			return;
-		}
-
-		if($this->metadata === NULL) {
-			$this->metadata = clone $other;
-			return;
-		}
-
-		$this->metadata->mergeUnder($other);
+		$this->metadata = array_merge($this->getMetadata(), $other);
 	}
 
 	/**
-	 * @param Metadata|NULL $other
+	 * @param array|NULL $other
 	 */
 	public function addMetadataOnBottom($other) {
-		if($other === NULL) {
+		if($other === NULL || !is_array($other) || empty($other)) {
 			return;
 		}
 
-		if(!($other instanceof Metadata)) {
-			return;
-		}
-
-		if($this->metadata === NULL) {
-			$this->metadata = clone $other;
-			return;
-		}
-
-		$this->metadata->mergeOver($other);
+		$this->metadata = array_merge($other, $this->getMetadata());
 	}
 
-	public function setMetadata(Metadata $metadata) {
-		$this->metadata = clone $metadata;
+	public function setMetadata(array $metadata) {
+		$this->metadata = $metadata;
 	}
 
-	/**
-	 * @return Metadata|NULL
-	 */
-	public function getMetadata(): Metadata {
-		return $this->metadata === NULL ? new Metadata() : $this->metadata ;
+	public function getMetadata(): array {
+		return $this->metadata === NULL ? [] : $this->metadata ;
 	}
 
 	public function stat() {

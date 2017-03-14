@@ -6,7 +6,6 @@
 
 namespace lvps\MechatronicAnvil\Parsers;
 use lvps\MechatronicAnvil\File;
-use lvps\MechatronicAnvil\Metadata;
 use lvps\MechatronicAnvil\Parser;
 
 /**
@@ -29,7 +28,7 @@ class YamlForMarkdown implements Parser{
 	}
 
 	public function parse(File $file) {
-		$metadata = new Metadata($this->yamlParse($file->getRenderFrom()->getContents()));
+		$metadata = $this->yamlParse($file->getRenderFrom()->getContents());
 
 		$found = NULL;
 		$search = $file->getBasenameWithoutExtension();
