@@ -56,15 +56,15 @@ The `parse()` method can, for example:
 
 User-defined callback function `onParsed($output)` is then called.
 
+**Deleting non-renderable files**: `File`s marked with `$file->doNotRender()` are deleted from the output tree.
+
+User-defined callback function `onPruned($output)` is then called.
+
 **Merging metadata**: any metadata applied to a `Directory` is considered "global" and it applies to each `File` and `Directory` contained there. Metadata contained by `File`s themselves has precedence over global metadata, however.
 
 To account for this, the program will take metadata from each `Directory` and apply it to each `File` and `Directory` contained inside recursively (i.e. even to sub-sub-sub-directories and so on).
 
-User-defined callback function `onMerged($output)` is then called.
-
-**Deleting non-renderable files**: `File`s marked with `$file->doNotRender()` are finally deleted from the output tree.
-
-User-defined callback function `onPruned($output)` is then called. This is a good time to generate a sitemap or similar content using the callback function.
+User-defined callback function `onMerged($output)` is then called. This is a good time to generate a sitemap or similar content using the callback function.
 
 **Cleaning output directory**: if the input directory contents have changed since last run, output directory may still contain files that don't exist anymore and won't be rendered again: the program checks for any file in output directory that isn't in the output tree and deletes it from disk.
 
