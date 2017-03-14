@@ -115,6 +115,7 @@ $output->recursiveWalkCallback(function(File $file) use (&$currentMetadata) {
 }, function(Directory $entering) use (&$metadataStack, &$currentMetadata) {
 	$metadataStack[] = $entering->getMetadata();
 	$currentMetadata = buildMetadataFromStack($metadataStack);
+	$entering->addMetadataOnBottom($currentMetadata);
 }, function(Directory $leaving) use (&$metadataStack, &$currentMetadata, $output) {
 	array_pop($metadataStack);
 	$currentMetadata = buildMetadataFromStack($metadataStack);
