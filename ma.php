@@ -105,6 +105,21 @@ $output->recursiveWalkCallback(function(File $file) use ($parsers, &$stats) {
 onParsed($output);
 println('Done parsing');
 
+$output->recursiveDeleteOnCondition(function(File $file) {
+	return !$file->getDoRender();
+},
+	NULL,
+
+	function(Directory $leaving) {
+		if($leaving->countContent() === 0) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+onPruned($output);
+println('Done pruning non-renderable files');
+
 $metadataStack = [];
 $currentMetadata = [];
 function buildMetadataFromStack(array $metadataStack): array {
@@ -125,27 +140,13 @@ $output->recursiveWalkCallback(function(File $file) use (&$currentMetadata) {
 }, function(Directory $entering) use (&$metadataStack, &$currentMetadata) {
 	$metadataStack[] = $entering->getMetadata();
 	$currentMetadata = buildMetadataFromStack($metadataStack);
+	$entering->addMetadataOnBottom($currentMetadata);
 }, function(Directory $leaving) use (&$metadataStack, &$currentMetadata, $output) {
 	array_pop($metadataStack);
 	$currentMetadata = buildMetadataFromStack($metadataStack);
 });
 onMerged($output);
 println('Done merging metadata');
-
-$output->recursiveDeleteOnCondition(function(File $file) {
-	return !$file->getDoRender();
-},
-	NULL,
-
-	function(Directory $leaving) {
-	if($leaving->countContent() === 0) {
-		return true;
-	} else {
-		return false;
-	}
-});
-onPruned($output);
-println('Done pruning non-renderable files');
 
 $output->deleteDeletedFiles();
 onCleaned($output);
