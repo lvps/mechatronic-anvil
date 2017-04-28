@@ -18,11 +18,21 @@ require __DIR__ . '/vendor/autoload.php';
 if(!defined('INPUT')) {
 	define('INPUT', 'input');
 }
+if(!file_exists(INPUT)) {
+	throw new \Exception('Input directory ('.INPUT.') does not exist!');
+}
 if(!is_dir(INPUT)) {
 	throw new \Exception('Input directory ('.INPUT.') is not a directory!');
 }
 if(!defined('OUTPUT')) {
 	define('OUTPUT', 'output');
+}
+if(!file_exists(OUTPUT)) {
+	if(mkdir(OUTPUT)) {
+		println('Output directory ('.OUTPUT.') created');
+	} else {
+		throw new \Exception('Output directory ('.OUTPUT.') does not exist and cannot be created!');
+	}
 }
 if(!is_dir(OUTPUT)) {
 	throw new \Exception('Output directory ('.OUTPUT.') is not a directory!');
